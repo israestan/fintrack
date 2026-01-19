@@ -1,0 +1,33 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'view_models/splash_view_model.dart';
+import 'view_models/accounts_view_model.dart';
+import 'view_models/navigation_view_model.dart';
+import 'screens/splash_screen.dart';
+import 'theme/app_theme.dart';
+
+void main() {
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => SplashViewModel()),
+        ChangeNotifierProvider(create: (_) => AccountsViewModel()),
+        ChangeNotifierProvider(create: (_) => NavigationViewModel()),
+      ],
+      child: const MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'FinTrack',
+      theme: AppTheme.lightTheme,
+      home: const SplashScreen(),
+    );
+  }
+}
