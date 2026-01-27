@@ -9,21 +9,14 @@ import 'tabs/reports_tab.dart';
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
 
-  static const List<Widget> _pages = [
-    HomeTab(),
-    MovementsTab(),
-    ReportsTab(),
-  ];
+  static const List<Widget> _pages = [HomeTab(), MovementsTab(), ReportsTab()];
 
   @override
   Widget build(BuildContext context) {
     final navViewModel = context.watch<NavigationViewModel>();
 
     return Scaffold(
-      body: IndexedStack(
-        index: navViewModel.currentIndex,
-        children: _pages,
-      ),
+      body: IndexedStack(index: navViewModel.currentIndex, children: _pages),
       bottomNavigationBar: const NavBar(),
     );
   }

@@ -40,20 +40,35 @@ void main() {
     final insertedId = await insertAccountRow(db, row);
     expect(insertedId, greaterThan(0));
 
-    final res = await queryAccountsRows(db, where: 'id = ?', whereArgs: ['acct-1']);
+    final res = await queryAccountsRows(
+      db,
+      where: 'id = ?',
+      whereArgs: ['acct-1'],
+    );
     expect(res, isNotEmpty);
     expect(res.first['name'], 'Cash');
 
-    final updated = await updateAccountRow(db, 'acct-1', {'name': 'Cash2', 'updated_at': 'now'});
+    final updated = await updateAccountRow(db, 'acct-1', {
+      'name': 'Cash2',
+      'updated_at': 'now',
+    });
     expect(updated, equals(1));
 
-    final res2 = await queryAccountsRows(db, where: 'id = ?', whereArgs: ['acct-1']);
+    final res2 = await queryAccountsRows(
+      db,
+      where: 'id = ?',
+      whereArgs: ['acct-1'],
+    );
     expect(res2.first['name'], 'Cash2');
 
     final deleted = await deleteAccountRow(db, 'acct-1');
     expect(deleted, equals(1));
 
-    final res3 = await queryAccountsRows(db, where: 'id = ?', whereArgs: ['acct-1']);
+    final res3 = await queryAccountsRows(
+      db,
+      where: 'id = ?',
+      whereArgs: ['acct-1'],
+    );
     expect(res3, isEmpty);
   });
 }

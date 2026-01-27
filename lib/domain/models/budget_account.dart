@@ -12,16 +12,16 @@ class BudgetAccount {
   });
 
   factory BudgetAccount.fromMap(Map<String, Object?> m) => BudgetAccount(
-        accountId: m['account_id'] as String,
-        budgetId: m['budget_id'] as String,
-        createdAt: m['created_at'] as String?,
-        updatedAt: m['updated_at'] as String?,
-      );
+    accountId: m['account_id'] as String,
+    budgetId: m['budget_id'] as String,
+    createdAt: m['created_at'] as String?,
+    updatedAt: m['updated_at'] as String?,
+  );
 
   Map<String, Object?> toMap() => {
-        'account_id': accountId,
-        'budget_id': budgetId,
-        'created_at': createdAt,
-        'updated_at': updatedAt,
-      };
+    'account_id': accountId,
+    'budget_id': budgetId,
+    'created_at': createdAt,
+    'updated_at': updatedAt,
+  };
 }

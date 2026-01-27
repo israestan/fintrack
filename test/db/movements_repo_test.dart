@@ -21,7 +21,11 @@ void main() {
 
     // create account row required by FK
     final db = await FinTrackDb.instance.db;
-    await db.insert('account_types', {'id': 't1', 'code': 'T1', 'name': 'Type1'});
+    await db.insert('account_types', {
+      'id': 't1',
+      'code': 'T1',
+      'name': 'Type1',
+    });
     await db.insert('accounts', {
       'id': 'acct-1',
       'name': 'A1',
@@ -31,7 +35,7 @@ void main() {
       'initial_balance_cents': 0,
       'actual_balance_cents': 0,
       'active': 1,
-      'type_id': 't1'
+      'type_id': 't1',
     });
 
     final m1 = Movement(

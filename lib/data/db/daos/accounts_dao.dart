@@ -2,7 +2,10 @@ import 'package:sqflite_common/sqlite_api.dart';
 
 const String _table = 'accounts';
 
-Future<int> insertAccountRow(DatabaseExecutor db, Map<String, Object?> row) async {
+Future<int> insertAccountRow(
+  DatabaseExecutor db,
+  Map<String, Object?> row,
+) async {
   return await db.insert(_table, row);
 }
 
@@ -24,7 +27,11 @@ Future<List<Map<String, Object?>>> queryAccountsRows(
   );
 }
 
-Future<int> updateAccountRow(DatabaseExecutor db, String id, Map<String, Object?> row) async {
+Future<int> updateAccountRow(
+  DatabaseExecutor db,
+  String id,
+  Map<String, Object?> row,
+) async {
   return await db.update(_table, row, where: 'id = ?', whereArgs: [id]);
 }
 

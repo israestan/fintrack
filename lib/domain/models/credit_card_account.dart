@@ -19,7 +19,8 @@ class CreditCardAccount {
     this.updatedAt,
   });
 
-  factory CreditCardAccount.fromMap(Map<String, Object?> m) => CreditCardAccount(
+  factory CreditCardAccount.fromMap(Map<String, Object?> m) =>
+      CreditCardAccount(
         accountId: m['account_id'] as String,
         bankName: m['bank_name'] as String,
         lastDigits: m['last_digits'] as String,
@@ -31,13 +32,13 @@ class CreditCardAccount {
       );
 
   Map<String, Object?> toMap() => {
-        'account_id': accountId,
-        'bank_name': bankName,
-        'last_digits': lastDigits,
-        'limit_cents': limitCents,
-        'closing_date': closingDate,
-        'due_date': dueDate,
-        'created_at': createdAt,
-        'updated_at': updatedAt,
-      };
+    'account_id': accountId,
+    'bank_name': bankName,
+    'last_digits': lastDigits,
+    'limit_cents': limitCents,
+    'closing_date': closingDate,
+    'due_date': dueDate,
+    'created_at': createdAt,
+    'updated_at': updatedAt,
+  };
 }

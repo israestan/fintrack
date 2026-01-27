@@ -7,8 +7,10 @@ class SplashViewModel extends ChangeNotifier {
 
   Future<void> initializeApp() async {
     await FinTrackDb.instance.init();
-    
-    await Future.delayed(const Duration(seconds: 2)); // Simular carga mínima para ver splash
+
+    await Future.delayed(
+      const Duration(seconds: 2),
+    ); // Simular carga mínima para ver splash
 
     _isInitialized = true;
     notifyListeners();

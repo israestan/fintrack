@@ -11,7 +11,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => SplashViewModel()),
-        ChangeNotifierProvider(create: (_) => AccountsViewModel()),
+        ChangeNotifierProvider(create: (_) => AccountsViewModel()..loadAccounts()),
         ChangeNotifierProvider(create: (_) => NavigationViewModel()),
       ],
       child: const MyApp(),

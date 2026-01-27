@@ -52,27 +52,46 @@ void main() {
     await insertCategoryRow(db, child);
 
     // listByType
-    final outcomes = await queryCategoriesRows(db, where: 'type = ?', whereArgs: ['OUTCOME']);
+    final outcomes = await queryCategoriesRows(
+      db,
+      where: 'type = ?',
+      whereArgs: ['OUTCOME'],
+    );
     expect(outcomes.length, greaterThanOrEqualTo(2));
 
     // children of root
-    final children = await queryCategoriesRows(db, where: 'parent_id = ?', whereArgs: ['cat-root']);
+    final children = await queryCategoriesRows(
+      db,
+      where: 'parent_id = ?',
+      whereArgs: ['cat-root'],
+    );
     expect(children.length, 1);
     expect(children.first['id'], 'cat-child');
 
     // hierarchy via recursive CTE executed in repo (rawQuery) not here; at least ensure rows exist
 
     // update
-    final updated = await updateCategoryRow(db, 'cat-child', {'name': 'Child2', 'updated_at': 'now'});
+    final updated = await updateCategoryRow(db, 'cat-child', {
+      'name': 'Child2',
+      'updated_at': 'now',
+    });
     expect(updated, equals(1));
 
-    final res = await queryCategoriesRows(db, where: 'id = ?', whereArgs: ['cat-child']);
+    final res = await queryCategoriesRows(
+      db,
+      where: 'id = ?',
+      whereArgs: ['cat-child'],
+    );
     expect(res.first['name'], 'Child2');
 
     // delete
     final deleted = await deleteCategoryRow(db, 'cat-child');
     expect(deleted, equals(1));
-    final res2 = await queryCategoriesRows(db, where: 'id = ?', whereArgs: ['cat-child']);
+    final res2 = await queryCategoriesRows(
+      db,
+      where: 'id = ?',
+      whereArgs: ['cat-child'],
+    );
     expect(res2, isEmpty);
   });
 }

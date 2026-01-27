@@ -1,6 +1,8 @@
 // Schema constants and DDL for FinTrack (version 1)
 // Generated from FinTrack_Flutter_SQLite_Implementation.md
 
+// ignore_for_file: constant_identifier_names
+
 const String TABLE_ACCOUNT_TYPES = 'account_types';
 const String TABLE_ACCOUNTS = 'accounts';
 const String TABLE_BANK_ACCOUNTS = 'bank_accounts';
@@ -62,8 +64,7 @@ const String COL_BUDGET_ACCOUNT_BUDGET_ID = 'budget_id';
 
 // DDL list (version 1)
 final List<String> ddlV1 = [
-  '''PRAGMA foreign_keys = ON;''',
-
+  // '''PRAGMA foreign_keys = ON;''', // Moved to onConfigure
   '''
 CREATE TABLE account_types (
   id   TEXT PRIMARY KEY,

@@ -1,4 +1,3 @@
-
 import 'package:fintrack/data/db/fintrack_db.dart';
 import 'package:fintrack/data/db/daos/budget_dao.dart';
 import 'package:fintrack/data/db/daos/budget_accounts_dao.dart';
@@ -15,13 +14,23 @@ class BudgetsRepository {
     row['id'] = id;
     final toInsert = withCreateTimestamps(row);
     await insertBudgetRow(db, toInsert);
-    final res = await queryBudgetRows(db, where: 'id = ?', whereArgs: [id], limit: 1);
+    final res = await queryBudgetRows(
+      db,
+      where: 'id = ?',
+      whereArgs: [id],
+      limit: 1,
+    );
     return Budget.fromMap(res.first);
   }
 
   Future<Budget?> getBudgetById(String id) async {
     final db = await FinTrackDb.instance.db;
-    final rows = await queryBudgetRows(db, where: 'id = ?', whereArgs: [id], limit: 1);
+    final rows = await queryBudgetRows(
+      db,
+      where: 'id = ?',
+      whereArgs: [id],
+      limit: 1,
+    );
     if (rows.isEmpty) return null;
     return Budget.fromMap(rows.first);
   }

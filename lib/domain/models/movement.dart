@@ -24,28 +24,28 @@ class Movement {
   });
 
   factory Movement.fromMap(Map<String, Object?> m) => Movement(
-        id: m['id'] as String,
-        type: m['type'] as String,
-        icon: m['icon'] as String,
-        description: m['description'] as String?,
-        amountCents: (m['amount_cents'] as int),
-        date: m['date'] as String,
-        categoryId: m['category_id'] as String?,
-        accountId: m['account_id'] as String,
-        createdAt: m['created_at'] as String?,
-        updatedAt: m['updated_at'] as String?,
-      );
+    id: m['id'] as String,
+    type: m['type'] as String,
+    icon: m['icon'] as String,
+    description: m['description'] as String?,
+    amountCents: (m['amount_cents'] as int),
+    date: m['date'] as String,
+    categoryId: m['category_id'] as String?,
+    accountId: m['account_id'] as String,
+    createdAt: m['created_at'] as String?,
+    updatedAt: m['updated_at'] as String?,
+  );
 
   Map<String, Object?> toMap() => {
-        'id': id,
-        'type': type,
-        'icon': icon,
-        'description': description,
-        'amount_cents': amountCents,
-        'date': date,
-        'category_id': categoryId,
-        'account_id': accountId,
-        'created_at': createdAt,
-        'updated_at': updatedAt,
-      };
+    'id': id,
+    'type': type,
+    'icon': icon,
+    'description': description,
+    'amount_cents': amountCents,
+    'date': date,
+    'category_id': categoryId,
+    'account_id': accountId,
+    'created_at': createdAt,
+    'updated_at': updatedAt,
+  };
 }

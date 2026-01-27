@@ -21,7 +21,14 @@ void main() {
 
   test('generateUuidV4 produces valid UUID string', () {
     final id = generateUuidV4();
-    expect(id, matches(RegExp(r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$')));
+    expect(
+      id,
+      matches(
+        RegExp(
+          r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$',
+        ),
+      ),
+    );
   });
 
   test('withCreateTimestamps adds created_at and updated_at when missing', () {
@@ -35,7 +42,10 @@ void main() {
   });
 
   test('withUpdateTimestamp sets updated_at and removes created_at', () {
-    final row = <String, Object?>{'created_at': '2020-01-01T00:00:00Z', 'foo': 'bar'};
+    final row = <String, Object?>{
+      'created_at': '2020-01-01T00:00:00Z',
+      'foo': 'bar',
+    };
     final res = withUpdateTimestamp(row);
     expect(res.containsKey('created_at'), isFalse);
     expect(res.containsKey('updated_at'), isTrue);

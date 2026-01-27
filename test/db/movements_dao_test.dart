@@ -17,7 +17,11 @@ void main() {
       await db.execute(s);
     }
     // insert minimal referenced rows for foreign keys
-    await db.insert('account_types', {'id': 't1', 'code': 'T1', 'name': 'Type1'});
+    await db.insert('account_types', {
+      'id': 't1',
+      'code': 'T1',
+      'name': 'Type1',
+    });
     await db.insert('accounts', {
       'id': 'acct-1',
       'name': 'A1',
@@ -27,7 +31,7 @@ void main() {
       'initial_balance_cents': 0,
       'actual_balance_cents': 0,
       'active': 1,
-      'type_id': 't1'
+      'type_id': 't1',
     });
   });
 
@@ -52,20 +56,35 @@ void main() {
     final inserted = await insertMovementRow(db, row);
     expect(inserted, greaterThan(0));
 
-    final res = await queryMovementsRows(db, where: 'id = ?', whereArgs: ['mov-1']);
+    final res = await queryMovementsRows(
+      db,
+      where: 'id = ?',
+      whereArgs: ['mov-1'],
+    );
     expect(res, isNotEmpty);
     expect(res.first['amount_cents'], 2000);
 
-    final updated = await updateMovementRow(db, 'mov-1', {'description': 'Updated', 'updated_at': 'now'});
+    final updated = await updateMovementRow(db, 'mov-1', {
+      'description': 'Updated',
+      'updated_at': 'now',
+    });
     expect(updated, equals(1));
 
-    final res2 = await queryMovementsRows(db, where: 'id = ?', whereArgs: ['mov-1']);
+    final res2 = await queryMovementsRows(
+      db,
+      where: 'id = ?',
+      whereArgs: ['mov-1'],
+    );
     expect(res2.first['description'], 'Updated');
 
     final deleted = await deleteMovementRow(db, 'mov-1');
     expect(deleted, equals(1));
 
-    final res3 = await queryMovementsRows(db, where: 'id = ?', whereArgs: ['mov-1']);
+    final res3 = await queryMovementsRows(
+      db,
+      where: 'id = ?',
+      whereArgs: ['mov-1'],
+    );
     expect(res3, isEmpty);
   });
 }

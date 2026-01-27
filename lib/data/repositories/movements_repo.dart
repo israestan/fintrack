@@ -8,7 +8,10 @@ import 'package:fintrack/domain/models/movement.dart';
 
 class MovementsRepository {
   /// Create a movement. If [txn] is provided the insertion will use it (for transactions).
-  Future<String> createMovement(Movement movement, {DatabaseExecutor? txn}) async {
+  Future<String> createMovement(
+    Movement movement, {
+    DatabaseExecutor? txn,
+  }) async {
     final db = txn ?? await FinTrackDb.instance.db;
     final id = movement.id.isNotEmpty ? movement.id : generateUuidV4();
     final row = movement.toMap()..['id'] = id;
@@ -19,7 +22,12 @@ class MovementsRepository {
 
   Future<Movement?> getMovementById(String id) async {
     final db = await FinTrackDb.instance.db;
-    final res = await queryMovementsRows(db, where: 'id = ?', whereArgs: [id], limit: 1);
+    final res = await queryMovementsRows(
+      db,
+      where: 'id = ?',
+      whereArgs: [id],
+      limit: 1,
+    );
     if (res.isEmpty) return null;
     return Movement.fromMap(res.first);
   }
@@ -73,7 +81,8 @@ class MovementsRepository {
     }
 
     final where = whereParts.isEmpty ? '' : 'WHERE ${whereParts.join(' AND ')}';
-    final sql = 'SELECT COALESCE(SUM(amount_cents), 0) as total FROM movements $where';
+    final sql =
+        'SELECT COALESCE(SUM(amount_cents), 0) as total FROM movements $where';
     final res = await db.rawQuery(sql, args);
     if (res.isEmpty) return 0;
     final v = res.first['total'];

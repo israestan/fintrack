@@ -74,7 +74,9 @@ void main() {
     expect(hierarchy.any((c) => c.id == createdChild.id), isTrue);
 
     // update
-    final updated = await repo.updateCategory(createdChild.id, {'name': 'ChildRepo2'});
+    final updated = await repo.updateCategory(createdChild.id, {
+      'name': 'ChildRepo2',
+    });
     expect(updated, 1);
     final fetched = await repo.getCategoryById(createdChild.id);
     expect(fetched?.name, 'ChildRepo2');

@@ -14,18 +14,18 @@ class BankAccount {
   });
 
   factory BankAccount.fromMap(Map<String, Object?> m) => BankAccount(
-        accountId: m['account_id'] as String,
-        bankName: m['bank_name'] as String,
-        number: m['number'] as String,
-        createdAt: m['created_at'] as String?,
-        updatedAt: m['updated_at'] as String?,
-      );
+    accountId: m['account_id'] as String,
+    bankName: m['bank_name'] as String,
+    number: m['number'] as String,
+    createdAt: m['created_at'] as String?,
+    updatedAt: m['updated_at'] as String?,
+  );
 
   Map<String, Object?> toMap() => {
-        'account_id': accountId,
-        'bank_name': bankName,
-        'number': number,
-        'created_at': createdAt,
-        'updated_at': updatedAt,
-      };
+    'account_id': accountId,
+    'bank_name': bankName,
+    'number': number,
+    'created_at': createdAt,
+    'updated_at': updatedAt,
+  };
 }

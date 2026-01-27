@@ -18,9 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
       context.read<SplashViewModel>().initializeApp().then((_) {
         if (mounted) {
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (_) => const MainScreen(),
-            ),
+            MaterialPageRoute(builder: (_) => const MainScreen()),
           );
         }
       });
@@ -34,7 +32,10 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('FinTrack', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            Text(
+              'FinTrack',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
             SizedBox(height: 20),
             CircularProgressIndicator(),
             SizedBox(height: 10),

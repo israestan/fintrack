@@ -13,7 +13,7 @@ class AppTheme {
       primary: primaryColor,
       surface: Colors.white,
     ),
-    
+
     // Configuración global de Splash y Highlight (ripple effect)
     splashColor: primaryColor.withValues(alpha: 0.1),
     highlightColor: primaryColor.withValues(alpha: 0.1),

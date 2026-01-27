@@ -20,7 +20,12 @@ class AccountsRepository {
 
   Future<Account?> getAccountById(String id) async {
     final db = await FinTrackDb.instance.db;
-    final res = await queryAccountsRows(db, where: 'id = ?', whereArgs: [id], limit: 1);
+    final res = await queryAccountsRows(
+      db,
+      where: 'id = ?',
+      whereArgs: [id],
+      limit: 1,
+    );
     if (res.isEmpty) return null;
     return Account.fromMap(res.first);
   }
@@ -43,7 +48,10 @@ class AccountsRepository {
   }
 
   // Low-level helper to allow transactional usage in services/tests
-  Future<String> createAccountInTransaction(DatabaseExecutor txn, Account account) async {
+  Future<String> createAccountInTransaction(
+    DatabaseExecutor txn,
+    Account account,
+  ) async {
     final id = account.id.isNotEmpty ? account.id : generateUuidV4();
     final row = account.toMap();
     row['id'] = id;

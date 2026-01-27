@@ -1,4 +1,3 @@
-
 import 'package:fintrack/data/db/fintrack_db.dart';
 import 'package:fintrack/data/db/daos/bank_accounts_dao.dart';
 import 'package:fintrack/data/utils/db_helpers.dart';
@@ -14,12 +13,20 @@ class BankAccountsRepository {
 
   Future<BankAccount?> getByAccountId(String accountId) async {
     final db = await FinTrackDb.instance.db;
-    final rows = await queryBankAccountRows(db, where: 'account_id = ?', whereArgs: [accountId], limit: 1);
+    final rows = await queryBankAccountRows(
+      db,
+      where: 'account_id = ?',
+      whereArgs: [accountId],
+      limit: 1,
+    );
     if (rows.isEmpty) return null;
     return BankAccount.fromMap(rows.first);
   }
 
-  Future<int> updateBankAccount(String accountId, Map<String, Object?> changes) async {
+  Future<int> updateBankAccount(
+    String accountId,
+    Map<String, Object?> changes,
+  ) async {
     final db = await FinTrackDb.instance.db;
     final updateRow = withUpdateTimestamp(changes);
     return await updateBankAccountRow(db, accountId, updateRow);

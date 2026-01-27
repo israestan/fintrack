@@ -19,24 +19,43 @@ class CategoriesRepository {
 
   Future<Category?> getCategoryById(String id) async {
     final db = await FinTrackDb.instance.db;
-    final res = await queryCategoriesRows(db, where: 'id = ?', whereArgs: [id], orderBy: null);
+    final res = await queryCategoriesRows(
+      db,
+      where: 'id = ?',
+      whereArgs: [id],
+      orderBy: null,
+    );
     if (res.isEmpty) return null;
     return Category.fromMap(res.first);
   }
 
   Future<List<Category>> listByType(String type) async {
     final db = await FinTrackDb.instance.db;
-    final rows = await queryCategoriesRows(db, where: 'type = ?', whereArgs: [type], orderBy: 'name');
+    final rows = await queryCategoriesRows(
+      db,
+      where: 'type = ?',
+      whereArgs: [type],
+      orderBy: 'name',
+    );
     return rows.map((r) => Category.fromMap(r)).toList();
   }
 
   Future<List<Category>> listChildren(String? parentId) async {
     final db = await FinTrackDb.instance.db;
     if (parentId == null) {
-      final rows = await queryCategoriesRows(db, where: 'parent_id IS NULL', orderBy: 'name');
+      final rows = await queryCategoriesRows(
+        db,
+        where: 'parent_id IS NULL',
+        orderBy: 'name',
+      );
       return rows.map((r) => Category.fromMap(r)).toList();
     }
-    final rows = await queryCategoriesRows(db, where: 'parent_id = ?', whereArgs: [parentId], orderBy: 'name');
+    final rows = await queryCategoriesRows(
+      db,
+      where: 'parent_id = ?',
+      whereArgs: [parentId],
+      orderBy: 'name',
+    );
     return rows.map((r) => Category.fromMap(r)).toList();
   }
 
@@ -64,7 +83,10 @@ class CategoriesRepository {
   }
 
   // Transactional helper
-  Future<String> createCategoryInTransaction(DatabaseExecutor txn, Category category) async {
+  Future<String> createCategoryInTransaction(
+    DatabaseExecutor txn,
+    Category category,
+  ) async {
     final id = category.id.isNotEmpty ? category.id : generateUuidV4();
     final row = category.toMap()..['id'] = id;
     final toInsert = withCreateTimestamps(row);

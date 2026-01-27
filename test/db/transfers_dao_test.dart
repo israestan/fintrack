@@ -17,7 +17,11 @@ void main() {
       await db.execute(s);
     }
     // required account data for movement FKs
-    await db.insert('account_types', {'id': 't1', 'code': 'T1', 'name': 'Type1'});
+    await db.insert('account_types', {
+      'id': 't1',
+      'code': 'T1',
+      'name': 'Type1',
+    });
     await db.insert('accounts', {
       'id': 'acct-A',
       'name': 'A',
@@ -27,7 +31,7 @@ void main() {
       'initial_balance_cents': 10000,
       'actual_balance_cents': 10000,
       'active': 1,
-      'type_id': 't1'
+      'type_id': 't1',
     });
     await db.insert('accounts', {
       'id': 'acct-B',
@@ -38,7 +42,7 @@ void main() {
       'initial_balance_cents': 5000,
       'actual_balance_cents': 5000,
       'active': 1,
-      'type_id': 't1'
+      'type_id': 't1',
     });
   });
 
@@ -87,13 +91,21 @@ void main() {
     final inserted = await insertTransferRow(db, transferRow);
     expect(inserted, greaterThan(0));
 
-    final res = await queryTransfersRows(db, where: 'id = ?', whereArgs: ['tr-1']);
+    final res = await queryTransfersRows(
+      db,
+      where: 'id = ?',
+      whereArgs: ['tr-1'],
+    );
     expect(res, isNotEmpty);
     expect(res.first['income_movement_id'], 'm-in');
 
     final deleted = await deleteTransferRow(db, 'tr-1');
     expect(deleted, equals(1));
-    final after = await queryTransfersRows(db, where: 'id = ?', whereArgs: ['tr-1']);
+    final after = await queryTransfersRows(
+      db,
+      where: 'id = ?',
+      whereArgs: ['tr-1'],
+    );
     expect(after, isEmpty);
   });
 }

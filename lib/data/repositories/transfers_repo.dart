@@ -1,4 +1,3 @@
-
 import 'package:fintrack/domain/models/movement.dart';
 import 'package:fintrack/data/db/fintrack_db.dart';
 import 'package:fintrack/data/db/daos/transfers_dao.dart';
@@ -20,7 +19,8 @@ class TransfersRepository {
     bool updateAccountBalances = true,
   }) async {
     if (amountCents <= 0) throw ArgumentError('amountCents must be > 0');
-    if (fromAccountId == toAccountId) throw ArgumentError('fromAccountId and toAccountId must differ');
+    if (fromAccountId == toAccountId)
+      throw ArgumentError('fromAccountId and toAccountId must differ');
 
     final db = await FinTrackDb.instance.db;
     final transferId = generateUuidV4();
@@ -81,8 +81,14 @@ class TransfersRepository {
 
       if (updateAccountBalances) {
         // Update balances atomically using arithmetic
-        await txn.rawUpdate('UPDATE accounts SET actual_balance_cents = actual_balance_cents - ? WHERE id = ?', [amountCents, fromAccountId]);
-        await txn.rawUpdate('UPDATE accounts SET actual_balance_cents = actual_balance_cents + ? WHERE id = ?', [amountCents, toAccountId]);
+        await txn.rawUpdate(
+          'UPDATE accounts SET actual_balance_cents = actual_balance_cents - ? WHERE id = ?',
+          [amountCents, fromAccountId],
+        );
+        await txn.rawUpdate(
+          'UPDATE accounts SET actual_balance_cents = actual_balance_cents + ? WHERE id = ?',
+          [amountCents, toAccountId],
+        );
       }
     });
 

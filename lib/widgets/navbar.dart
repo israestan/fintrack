@@ -16,31 +16,19 @@ class NavBar extends StatelessWidget {
       onTap: (index) {
         if (index == 3) {
           // Caso especial: Settings navega a otra pantalla (push)
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const SettingsScreen()),
-          );
+          Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (_) => const SettingsScreen()));
         } else {
           // Navegación normal
           context.read<NavigationViewModel>().setIndex(index);
         }
       },
       items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.list),
-          label: 'Movements',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.pie_chart),
-          label: 'Reports',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.settings),
-          label: 'Settings',
-        ),
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+        BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Movements'),
+        BottomNavigationBarItem(icon: Icon(Icons.pie_chart), label: 'Reports'),
+        BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
       ],
     );
   }

@@ -22,26 +22,26 @@ class Category {
   });
 
   factory Category.fromMap(Map<String, Object?> m) => Category(
-        id: m['id'] as String,
-        parentId: m['parent_id'] as String?,
-        icon: m['icon'] as String,
-        color: m['color'] as String,
-        name: m['name'] as String,
-        description: m['description'] as String,
-        type: m['type'] as String,
-        createdAt: m['created_at'] as String?,
-        updatedAt: m['updated_at'] as String?,
-      );
+    id: m['id'] as String,
+    parentId: m['parent_id'] as String?,
+    icon: m['icon'] as String,
+    color: m['color'] as String,
+    name: m['name'] as String,
+    description: m['description'] as String,
+    type: m['type'] as String,
+    createdAt: m['created_at'] as String?,
+    updatedAt: m['updated_at'] as String?,
+  );
 
   Map<String, Object?> toMap() => {
-        'id': id,
-        'parent_id': parentId,
-        'icon': icon,
-        'color': color,
-        'name': name,
-        'description': description,
-        'type': type,
-        'created_at': createdAt,
-        'updated_at': updatedAt,
-      };
+    'id': id,
+    'parent_id': parentId,
+    'icon': icon,
+    'color': color,
+    'name': name,
+    'description': description,
+    'type': type,
+    'created_at': createdAt,
+    'updated_at': updatedAt,
+  };
 }

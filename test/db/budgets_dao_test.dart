@@ -18,7 +18,11 @@ void main() {
       await db.execute(s);
     }
     // prepare an account for budget_accounts FK
-    await db.insert('account_types', {'id': 't1', 'code': 'T1', 'name': 'Type1'});
+    await db.insert('account_types', {
+      'id': 't1',
+      'code': 'T1',
+      'name': 'Type1',
+    });
     await db.insert('accounts', {
       'id': 'acct-b',
       'name': 'AcctB',
@@ -28,7 +32,7 @@ void main() {
       'initial_balance_cents': 0,
       'actual_balance_cents': 0,
       'active': 1,
-      'type_id': 't1'
+      'type_id': 't1',
     });
   });
 
@@ -50,28 +54,52 @@ void main() {
     final inserted = await insertBudgetRow(db, row);
     expect(inserted, greaterThan(0));
 
-    final res = await queryBudgetRows(db, where: 'id = ?', whereArgs: ['bud-1']);
+    final res = await queryBudgetRows(
+      db,
+      where: 'id = ?',
+      whereArgs: ['bud-1'],
+    );
     expect(res, isNotEmpty);
 
-    final updated = await updateBudgetRow(db, 'bud-1', {'limit_cents': 90000, 'updated_at': 'now'});
+    final updated = await updateBudgetRow(db, 'bud-1', {
+      'limit_cents': 90000,
+      'updated_at': 'now',
+    });
     expect(updated, equals(1));
 
-    final res2 = await queryBudgetRows(db, where: 'id = ?', whereArgs: ['bud-1']);
+    final res2 = await queryBudgetRows(
+      db,
+      where: 'id = ?',
+      whereArgs: ['bud-1'],
+    );
     expect(res2.first['limit_cents'], 90000);
 
     // add account to budget
-    final ba = {'account_id': 'acct-b', 'budget_id': 'bud-1', 'created_at': null, 'updated_at': null};
+    final ba = {
+      'account_id': 'acct-b',
+      'budget_id': 'bud-1',
+      'created_at': null,
+      'updated_at': null,
+    };
     final insertedBa = await insertBudgetAccountRow(db, ba);
     expect(insertedBa, greaterThan(0));
 
-    final baRows = await queryBudgetAccountRows(db, where: 'budget_id = ?', whereArgs: ['bud-1']);
+    final baRows = await queryBudgetAccountRows(
+      db,
+      where: 'budget_id = ?',
+      whereArgs: ['bud-1'],
+    );
     expect(baRows.length, 1);
 
     // deleting budget should cascade to budget_accounts
     final deleted = await deleteBudgetRow(db, 'bud-1');
     expect(deleted, equals(1));
 
-    final baAfter = await queryBudgetAccountRows(db, where: 'budget_id = ?', whereArgs: ['bud-1']);
+    final baAfter = await queryBudgetAccountRows(
+      db,
+      where: 'budget_id = ?',
+      whereArgs: ['bud-1'],
+    );
     expect(baAfter, isEmpty);
   });
 }

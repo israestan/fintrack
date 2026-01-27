@@ -2,7 +2,10 @@ import 'package:sqflite_common/sqlite_api.dart';
 
 const String _table = 'transfers';
 
-Future<int> insertTransferRow(DatabaseExecutor db, Map<String, Object?> row) async {
+Future<int> insertTransferRow(
+  DatabaseExecutor db,
+  Map<String, Object?> row,
+) async {
   return await db.insert(_table, row);
 }
 

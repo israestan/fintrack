@@ -33,6 +33,38 @@ class FinTrackDb {
           if (s.isEmpty) continue;
           await db.execute(s);
         }
+
+        // Use batch to insert seed data safely
+        final batch = db.batch();
+
+        // Seed default account type
+        batch.insert('account_types', {
+          'id': 'type_general',
+          'code': 'GENERAL',
+          'name': 'General',
+        }, conflictAlgorithm: ConflictAlgorithm.ignore);
+
+        // Seed default account types
+        final types = [
+          ('CASH', 'CASH', 'Efectivo'),
+          ('CREDIT_CARD', 'CREDIT_CARD', 'Tarjeta de Crédito'),
+          ('SAVINGS_ACCOUNT', 'SAVINGS_ACCOUNT', 'Cuenta de Ahorros'),
+          ('CURRENT_ACCOUNT', 'CURRENT_ACCOUNT', 'Cuenta Corriente'),
+          ('GOAL', 'GOAL', 'Meta'),
+          ('DEBT', 'DEBT', 'Deuda'),
+          ('LOAN', 'LOAN', 'Préstamo'),
+          ('BUDGET', 'BUDGET', 'Presupuesto'),
+        ];
+
+        for (final t in types) {
+          batch.insert('account_types', {
+            'id': t.$1,
+            'code': t.$2,
+            'name': t.$3,
+          }, conflictAlgorithm: ConflictAlgorithm.ignore);
+        }
+
+        await batch.commit(noResult: true);
       },
       onUpgrade: (Database db, int oldVersion, int newVersion) async {
         // Placeholder for future migrations.

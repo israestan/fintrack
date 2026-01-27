@@ -13,12 +13,20 @@ class GoalAccountsRepository {
 
   Future<GoalAccount?> getByAccountId(String accountId) async {
     final db = await FinTrackDb.instance.db;
-    final rows = await queryGoalAccountRows(db, where: 'account_id = ?', whereArgs: [accountId], limit: 1);
+    final rows = await queryGoalAccountRows(
+      db,
+      where: 'account_id = ?',
+      whereArgs: [accountId],
+      limit: 1,
+    );
     if (rows.isEmpty) return null;
     return GoalAccount.fromMap(rows.first);
   }
 
-  Future<int> updateGoalAccount(String accountId, Map<String, Object?> changes) async {
+  Future<int> updateGoalAccount(
+    String accountId,
+    Map<String, Object?> changes,
+  ) async {
     final db = await FinTrackDb.instance.db;
     final updateRow = withUpdateTimestamp(changes);
     return await updateGoalAccountRow(db, accountId, updateRow);
