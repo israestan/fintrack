@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'view_models/splash_view_model.dart';
 import 'view_models/accounts_view_model.dart';
 import 'view_models/navigation_view_model.dart';
+import 'view_models/categories_view_model.dart';
 import 'screens/splash_screen.dart';
 import 'theme/app_theme.dart';
 
@@ -12,6 +13,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => SplashViewModel()),
         ChangeNotifierProvider(create: (_) => AccountsViewModel()..loadAccounts()),
+        ChangeNotifierProvider(create: (_) => CategoriesViewModel()..loadAll()),
         ChangeNotifierProvider(create: (_) => NavigationViewModel()),
       ],
       child: const MyApp(),

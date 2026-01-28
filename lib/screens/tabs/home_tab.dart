@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../widgets/accounts_carousel.dart';
+import '../categories_screen.dart';
 
 class HomeTab extends StatelessWidget {
   const HomeTab({super.key});
@@ -13,6 +14,18 @@ class HomeTab extends StatelessWidget {
         children: [
           const SizedBox(height: 32),
           const AccountsCarousel(),
+          const SizedBox(height: 32),
+          Center(
+            child: ElevatedButton.icon(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const CategoriesScreen()),
+                );
+              },
+              icon: const Icon(Icons.category),
+              label: const Text('Categorías'),
+            ),
+          ),
         ],
       ),
     );

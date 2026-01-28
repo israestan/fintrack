@@ -19,8 +19,9 @@ class TransfersRepository {
     bool updateAccountBalances = true,
   }) async {
     if (amountCents <= 0) throw ArgumentError('amountCents must be > 0');
-    if (fromAccountId == toAccountId)
+    if (fromAccountId == toAccountId) {
       throw ArgumentError('fromAccountId and toAccountId must differ');
+    }
 
     final db = await FinTrackDb.instance.db;
     final transferId = generateUuidV4();
