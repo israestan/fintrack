@@ -1,3 +1,4 @@
+import 'package:fintrack/screens/categories_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../screens/account_screen.dart';
@@ -18,13 +19,13 @@ class AccountsCarousel extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
+        const Text(
               'Tus cuentas',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
             ElevatedButton.icon(
               onPressed: () {
                 Navigator.of(
@@ -34,11 +35,22 @@ class AccountsCarousel extends StatelessWidget {
               icon: const Icon(Icons.account_balance_wallet),
               label: const Text('Ver y crear cuentas'),
             ),
+            Center(
+            child: ElevatedButton.icon(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const CategoriesScreen()),
+                );
+              },
+              icon: const Icon(Icons.category),
+              label: const Text('Categorías'),
+            ),
+          ),
           ],
         ),
         const SizedBox(height: 16),
         SizedBox(
-          height: 140,
+          height: 120,
           child: Consumer<AccountsViewModel>(
             builder: (context, vm, child) {
               if (vm.isLoading) {
@@ -98,7 +110,7 @@ class _AccountCard extends StatelessWidget {
 
     return Container(
       width: 200,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -140,7 +152,7 @@ class _AccountCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
           Text(
             formatter(account.actualBalanceCents),
             style: const TextStyle(

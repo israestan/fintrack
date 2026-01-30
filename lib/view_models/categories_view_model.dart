@@ -19,6 +19,14 @@ class CategoriesViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
+  Category? getCategoryById(String id) {
+    try {
+      return [..._incomeCategories, ..._expenseCategories].firstWhere((c) => c.id == id);
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<void> loadIncomeCategories() async {
     _isLoading = true;
     _error = null;

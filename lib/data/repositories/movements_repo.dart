@@ -32,6 +32,12 @@ class MovementsRepository {
     return Movement.fromMap(res.first);
   }
 
+  Future<List<Movement>> getAllMovements() async {
+    final db = await FinTrackDb.instance.db;
+    final res = await queryMovementsRows(db, orderBy: 'date DESC');
+    return res.map((r) => Movement.fromMap(r)).toList();
+  }
+
   Future<List<Movement>> listByAccountAndDateRange({
     required String accountId,
     required String dateFromIso,
