@@ -48,35 +48,55 @@ class _MovementsTabState extends State<MovementsTab> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Column(
-        children: [
-          // Header
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 8, 8),
-            child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Movimientos',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+    // Definir altura consistente para Headers
+    const double headerHeight = 60.0;
+    final Color headerColor = Theme.of(context).bottomNavigationBarTheme.backgroundColor ?? Colors.white;
+
+    return Column(
+      children: [
+        // Header Consistente que cubre el StatusBar
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: headerColor,
+            border: Border(
+              bottom: BorderSide(
+                color: Colors.black.withValues(alpha: 0.05),
+                width: 1,
               ),
-              Row(
+            ),
+          ),
+          child: SafeArea(
+            bottom: false,
+            child: Container(
+              height: headerHeight,
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.search),
-                    onPressed: () {}, // Placeholder
+                  const Text(
+                    'Movimientos',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      height: 1.2,
+                    ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.filter_list),
-                    onPressed: () {}, // Placeholder
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.search),
+                        onPressed: () {}, // Placeholder
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.filter_list),
+                        onPressed: () {}, // Placeholder
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
 
@@ -204,7 +224,6 @@ class _MovementsTabState extends State<MovementsTab> {
           ),
         ),
       ],
-      ),
     );
   }
 
