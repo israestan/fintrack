@@ -1,9 +1,10 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../domain/enums.dart';
+import '../domain/enums/enums.dart';
 import '../view_models/categories_view_model.dart';
 import '../view_models/movements_view_model.dart';
+import '../theme/app_theme.dart';
 
 class CategoryExpensesPieChart extends StatelessWidget {
   const CategoryExpensesPieChart({super.key});
@@ -101,7 +102,7 @@ class CategoryExpensesPieChart extends StatelessWidget {
               const Text(
                 'Gastos por Categoría',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: AppFontSizes.title,
                   fontWeight: FontWeight.bold,
                 ),
               ),

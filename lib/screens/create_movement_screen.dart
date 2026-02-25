@@ -7,7 +7,7 @@ import '../domain/models/category.dart';
 import '../domain/models/movement.dart';
 import '../view_models/categories_view_model.dart';
 import '../view_models/movements_view_model.dart';
-import '../domain/enums.dart';
+import '../domain/enums/enums.dart';
 
 class CreateMovementScreen extends StatefulWidget {
   const CreateMovementScreen({super.key});
@@ -23,6 +23,7 @@ class _CreateMovementScreenState extends State<CreateMovementScreen> {
   DateTime _selectedDate = DateTime.now();
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  String? _amountErrorText; // Nuevo estado para el error de monto
   
   @override
   void dispose() {
@@ -74,20 +75,25 @@ class _CreateMovementScreenState extends State<CreateMovementScreen> {
     // Parse amount
     final amountString = _amountController.text.trim();
     if (amountString.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Por favor ingresa un monto')),
-      );
+      setState(() {
+         _amountErrorText = 'Por favor ingresa un monto superior a 0';
+      });
       return;
     }
 
     final amount = double.tryParse(amountString);
     if (amount == null || amount <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('El monto debe ser mayor a 0')),
-      );
+      setState(() {
+         _amountErrorText = 'El monto debe ser mayor a 0';
+      });
       return;
     }
     
+    // Si la validación pasa, limpiamos el error
+    setState(() {
+         _amountErrorText = null;
+    });
+
     // Convert to cents
     final amountCents = (amount * 100).round();
 
@@ -347,17 +353,23 @@ class _CreateMovementScreenState extends State<CreateMovementScreen> {
                     child: Row(
                       children: [
                         Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              if (!_isIncome) {
-                                setState(() {
-                                  _isIncome = true;
-                                  _selectedCategory = null; // Reset category on type change
-                                });
-                              }
-                            },
+                          child: Semantics(
+                            button: true,
+                            label: 'Seleccionar tipo Ingreso',
+                            selected: _isIncome,
+                            hint: 'Toca para cambiar el tipo de movimiento a ingreso',
+                            child: GestureDetector(
+                              onTap: () {
+                                if (!_isIncome) {
+                                  setState(() {
+                                    _isIncome = true;
+                                    _selectedCategory = null; // Reset category on type change
+                                  });
+                                }
+                              },
                             child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              height: 48,
+                              // padding: const EdgeInsets.symmetric(vertical: 12),
                               decoration: BoxDecoration(
                                 color: _isIncome ? Colors.white : Colors.transparent,
                                 borderRadius: BorderRadius.circular(10),
@@ -376,7 +388,7 @@ class _CreateMovementScreenState extends State<CreateMovementScreen> {
                                 children: [
                                   Icon(
                                     Icons.input,
-                                    color: _isIncome ? Colors.black : Colors.grey,
+                                    color: _isIncome ? Colors.black : Colors.grey.shade700,
                                     size: 20,
                                   ),
                                   const SizedBox(width: 8),
@@ -384,7 +396,7 @@ class _CreateMovementScreenState extends State<CreateMovementScreen> {
                                     'Ingreso',
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
-                                      color: _isIncome ? Colors.black : Colors.grey,
+                                      color: _isIncome ? Colors.black : Colors.grey.shade700,
                                     ),
                                   ),
                                 ],
@@ -392,19 +404,27 @@ class _CreateMovementScreenState extends State<CreateMovementScreen> {
                             ),
                           ),
                         ),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              if (_isIncome) {
-                                setState(() {
-                                  _isIncome = false;
-                                  _selectedCategory = null; // Reset category on type change
-                                });
-                              }
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              decoration: BoxDecoration(
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                          child: Semantics(
+                            button: true,
+                            label: 'Seleccionar tipo Gasto',
+                            selected: !_isIncome,
+                            hint: 'Toca para cambiar el tipo de movimiento a gasto',
+                            child: GestureDetector(
+                              onTap: () {
+                                if (_isIncome) {
+                                  setState(() {
+                                    _isIncome = false;
+                                    _selectedCategory = null; // Reset category on type change
+                                  });
+                                }
+                              },
+                              child: Container(
+                                height: 48,
+                                // padding: const EdgeInsets.symmetric(vertical: 12),
+                                decoration: BoxDecoration(
                                 color: !_isIncome ? Colors.white : Colors.transparent,
                                 borderRadius: BorderRadius.circular(10),
                                 boxShadow: !_isIncome
@@ -422,7 +442,7 @@ class _CreateMovementScreenState extends State<CreateMovementScreen> {
                                 children: [
                                   Icon(
                                     Icons.output,
-                                    color: !_isIncome ? Colors.black : Colors.grey,
+                                    color: !_isIncome ? Colors.black : Colors.grey.shade700,
                                     size: 20,
                                   ),
                                   const SizedBox(width: 8),
@@ -430,7 +450,7 @@ class _CreateMovementScreenState extends State<CreateMovementScreen> {
                                     'Gasto',
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
-                                      color: !_isIncome ? Colors.black : Colors.grey,
+                                      color: !_isIncome ? Colors.black : Colors.grey.shade700,
                                     ),
                                   ),
                                 ],
@@ -438,19 +458,34 @@ class _CreateMovementScreenState extends State<CreateMovementScreen> {
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
                   ),
 
                   const SizedBox(height: 24),
 
-                  const Text(
-                    'Monto',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.grey,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Monto',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      if (_amountErrorText != null)
+                        Text(
+                          _amountErrorText!,
+                          style: const TextStyle(
+                            color: Colors.red,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                    ],
                   ),
                   const SizedBox(height: 8),
                   Row(
@@ -465,25 +500,41 @@ class _CreateMovementScreenState extends State<CreateMovementScreen> {
                       ),
                       const SizedBox(width: 16),
                       Expanded(
-                        child: TextField(
-                          controller: _amountController,
-                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        child: Semantics(
+                          textField: true,
+                          label: 'Monto de la transacción',
+                          hint: 'Ingresa el valor numérico',
+                          value: _amountController.text,
+                          child: TextField(
+                            controller: _amountController,
+                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                            onChanged: (_) {
+                              if (_amountErrorText != null) {
+                                setState(() {
+                                  _amountErrorText = null;
+                                });
+                              }
+                            },
                             style: const TextStyle(
                             fontSize: 40,
                             fontWeight: FontWeight.bold,
                           ),
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            hintText: '0.00',
-                              hintStyle: TextStyle(
-                              fontSize: 40,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black, // Makes it look active like in design
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: '0.00',
+                              // El error se muestra visualmente arriba, pero mantenemos esto para semántica y borde
+                              errorText: _amountErrorText, 
+                              errorStyle: const TextStyle(height: 0, color: Colors.transparent), 
+                              hintStyle: const TextStyle(
+                                fontSize: 40,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black, // Makes it look active like in design
+                              ),
                             ),
-                          ),
                         ),
                       ),
-                    ],
+                      ),
+                      ],
                   ),
 
                   const SizedBox(height: 32),
@@ -495,6 +546,7 @@ class _CreateMovementScreenState extends State<CreateMovementScreen> {
                         : 'Selecciona una cuenta',
                     icon: _resolveIcon(_selectedAccount?.icon, Icons.account_balance_wallet_outlined),
                     onTap: _showAccountSelectionModal,
+                    semanticsHint: 'Doble toque para cambiar la cuenta seleccionada',
                   ),
                   
                   const SizedBox(height: 16),
@@ -504,6 +556,7 @@ class _CreateMovementScreenState extends State<CreateMovementScreen> {
                     value: _selectedCategory?.name ?? 'Sin categoría',
                     icon: _resolveIcon(_selectedCategory?.icon, Icons.local_offer_outlined),
                     onTap: _showCategorySelectionModal,
+                    semanticsHint: 'Doble toque para cambiar la categoría',
                   ),
 
                   const SizedBox(height: 16),
@@ -513,6 +566,7 @@ class _CreateMovementScreenState extends State<CreateMovementScreen> {
                     value: DateFormat.yMMMd().format(_selectedDate),
                     icon: Icons.calendar_today_outlined,
                     onTap: () => _selectDate(context),
+                    semanticsHint: 'Doble toque para cambiar la fecha',
                   ),
 
                   const SizedBox(height: 24),
@@ -532,14 +586,19 @@ class _CreateMovementScreenState extends State<CreateMovementScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                    child: TextField(
-                      controller: _descriptionController,
-                      maxLines: 3,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        icon: Icon(Icons.edit_outlined, color: Colors.grey),
-                        hintText: 'Añade una descripción (opcional)',
-                        hintStyle: TextStyle(color: Colors.grey),
+                    child: Semantics(
+                      textField: true,
+                      label: 'Descripción de la transacción',
+                      hint: 'Opcional',
+                      child: TextField(
+                        controller: _descriptionController,
+                        maxLines: 3,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          icon: Icon(Icons.edit_outlined, color: Colors.grey.shade600),
+                          hintText: 'Añade una descripción (opcional)',
+                          hintStyle: TextStyle(color: Colors.grey.shade600),
+                        ),
                       ),
                     ),
                   ),
@@ -613,46 +672,53 @@ class _CreateMovementScreenState extends State<CreateMovementScreen> {
     required String value,
     required IconData icon,
     required VoidCallback onTap,
+    String? semanticsHint,
   }) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade300),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Row(
-            children: [
-              Icon(icon, color: Colors.grey.shade600),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      label,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey.shade600,
+      child: Semantics(
+        button: true, //Confirma que es un botón
+        label: '$label: $value', //Combina etiqueta y valor para la lectura
+        hint: semanticsHint, //Instrucción adicional
+        excludeSemantics: true, //Excluye los hijos para evitar lecturas duplicadas e incoherentes
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Row(
+              children: [
+                Icon(icon, color: Colors.grey.shade600),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        label,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey.shade600,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      value,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                      const SizedBox(height: 4),
+                      Text(
+                        value,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              const Icon(Icons.chevron_right, color: Colors.grey),
-            ],
+                const Icon(Icons.chevron_right, color: Colors.grey),
+              ],
+            ),
           ),
         ),
       ),

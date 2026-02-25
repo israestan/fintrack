@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../view_models/movements_view_model.dart';
 import '../domain/models/movement.dart';
+import '../theme/app_theme.dart';
 
 class IncomeExpensesHomeOverview extends StatefulWidget {
   const IncomeExpensesHomeOverview({super.key});
@@ -50,14 +51,14 @@ class _IncomeExpensesHomeOverviewState extends State<IncomeExpensesHomeOverview>
                   const Text(
                     'Balance',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: AppFontSizes.title,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(30),
                     ),
                     padding: const EdgeInsets.all(4),
                     child: Row(
@@ -80,57 +81,65 @@ class _IncomeExpensesHomeOverviewState extends State<IncomeExpensesHomeOverview>
               const SizedBox(height: 24),
 
               // Stats Row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _StatItem(
-                    label: 'Ingresos',
-                    amount: totalIncome,
-                    color: Colors.green.shade700,
-                    icon: Icons.input,
-                  ),
-                  _StatItem(
-                    label: 'Gastos',
-                    amount: totalExpense,
-                    color: Colors.red.shade700,
-                    icon: Icons.output,
-                  ),
-                ],
+              Semantics(
+                label: 'Resumen de flujo de caja',
+                child: Wrap(
+                  spacing: 16,
+                  runSpacing: 16,
+                  alignment: WrapAlignment.spaceBetween,
+                  children: [
+                    _StatItem(
+                      label: 'Ingresos',
+                      amount: totalIncome,
+                      color: Colors.green.shade700,
+                      icon: Icons.input,
+                    ),
+                    _StatItem(
+                      label: 'Gastos',
+                      amount: totalExpense,
+                      color: Colors.red.shade700,
+                      icon: Icons.output,
+                    ),
+                  ],
+                ),
               ),
 
               const SizedBox(height: 16),
 
               // Comparison Bar
-              if (totalFlow > 0)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: SizedBox(
-                    height: 12,
-                    child: Row(
-                      children: [
-                        if (totalIncome > 0)
-                          Expanded(
-                            flex: incomeFlex,
-                            child: Container(color: Colors.green.shade400),
+              Semantics(
+                label: 'Barra de comparación visual: Ingresos frente a Gastos',
+                excludeSemantics: true, // Ocultamos los detalles internos visuales
+                child: totalFlow > 0
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: SizedBox(
+                          height: 12,
+                          child: Row(
+                            children: [
+                              if (totalIncome > 0)
+                                Expanded(
+                                  flex: incomeFlex,
+                                  child: Container(color: Colors.green.shade400),
+                                ),
+                              if (totalExpense > 0)
+                                Expanded(
+                                  flex: expenseFlex,
+                                  child: Container(color: Colors.red.shade400),
+                                ),
+                            ],
                           ),
-                        if (totalExpense > 0)
-                          Expanded(
-                            flex: expenseFlex,
-                            child: Container(color: Colors.red.shade400),
-                          ),
-                      ],
-                    ),
-                  ),
-                )
-              else
-                 Container(
-                   height: 12,
-                   width: double.infinity,
-                   decoration: BoxDecoration(
-                     color: Colors.grey.shade200,
-                     borderRadius: BorderRadius.circular(8),
-                   ),
-                 ),
+                        ),
+                      )
+                    : Container(
+                        height: 12,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade200,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+              ),
             ],
           ),
         );
@@ -191,29 +200,37 @@ class _PeriodToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.white : Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, 1),
-                  )
-                ]
-              : null,
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-            color: isSelected ? Colors.black : Colors.grey.shade600,
+    return Semantics(
+      button: true,
+      selected: isSelected,
+      label: 'Ver balance por $label',
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          decoration: BoxDecoration(
+            color: isSelected ? Colors.white : Colors.transparent,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 4,
+                      offset: const Offset(0, 1),
+                    )
+                  ]
+                : null,
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: AppFontSizes.bodySmall,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+              color: isSelected ? Colors.black : Colors.grey.shade600,
+            ),
+            semanticsLabel: '', // Ocultamos el texto porque Semantics ya lo lee
           ),
         ),
       ),
@@ -256,7 +273,7 @@ class _StatItem extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: AppFontSizes.small,
                 color: Colors.grey.shade600,
                 fontWeight: FontWeight.w500,
               ),
@@ -267,7 +284,7 @@ class _StatItem extends StatelessWidget {
         Text(
           formatted,
           style: TextStyle(
-            fontSize: 18,
+            fontSize: AppFontSizes.title,
             fontWeight: FontWeight.bold,
             color: color,
           ),

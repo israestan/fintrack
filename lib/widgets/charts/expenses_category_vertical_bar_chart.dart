@@ -1,7 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../domain/enums.dart';
+import '../../domain/enums/enums.dart';
 import '../../view_models/categories_view_model.dart';
 import '../../view_models/movements_view_model.dart';
 
@@ -86,34 +86,40 @@ class ExpensesCategoryVerticalBarChart extends StatelessWidget {
         // Sort by amount descending to look cleaner
         chartData.sort((a, b) => b.amount.compareTo(a.amount));
 
-        return Container(
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Gastos por Categoría',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+        return Semantics(
+          label: 'Gráfico de barras de gastos por categoría',
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
                 ),
-              ),
-              const SizedBox(height: 32),
-              SizedBox(
-                height: 250,
-                child: BarChart(
-                  BarChartData(
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Gastos por Categoría',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  semanticsLabel: 'Gastos por Categoría',
+                ),
+                const SizedBox(height: 32),
+                Semantics(
+                  label: 'Detalle del gráfico',
+                  excludeSemantics: true, // Ocultamos los detalles internos complejos del gráfico para el lector
+                  child: SizedBox(
+                    height: 250,
+                    child: BarChart(
+                      BarChartData(
                     alignment: BarChartAlignment.spaceAround,
                     maxY: maxAmount * 1.2, // Add some top padding
                     barTouchData: BarTouchData(
@@ -234,8 +240,9 @@ class ExpensesCategoryVerticalBarChart extends StatelessWidget {
                     }).toList(),
                   ),
                 ),
-              ),
-            ],
+                ),),
+              ],
+            ),
           ),
         );
       },

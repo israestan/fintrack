@@ -5,7 +5,7 @@ import '../../view_models/movements_view_model.dart';
 import '../../view_models/categories_view_model.dart';
 import '../../view_models/accounts_view_model.dart';
 import '../../domain/models/movement.dart';
-import '../../domain/enums.dart';
+import '../../domain/enums/enums.dart';
 
 import '../create_movement_screen.dart';
 import '../../widgets/movement_details.dart';
@@ -86,10 +86,12 @@ class _MovementsTabState extends State<MovementsTab> {
                     children: [
                       IconButton(
                         icon: const Icon(Icons.search),
+                        tooltip: 'Buscar movimientos',
                         onPressed: () {}, // Placeholder
                       ),
                       IconButton(
                         icon: const Icon(Icons.filter_list),
+                        tooltip: 'Filtrar movimientos',
                         onPressed: () {}, // Placeholder
                       ),
                     ],
@@ -228,20 +230,26 @@ class _MovementsTabState extends State<MovementsTab> {
   }
 
   Widget _buildFilterChip(String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(8),
-        color: Colors.white,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
-          const SizedBox(width: 4),
-          const Icon(Icons.keyboard_arrow_down, size: 16),
-        ],
+    return InkWell(
+      onTap: () {}, // Placeholder para futura funcionalidad
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        height: 48,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey.shade300),
+          borderRadius: BorderRadius.circular(8),
+          color: Colors.white,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
+            const SizedBox(width: 4),
+            const Icon(Icons.keyboard_arrow_down, size: 16),
+          ],
+        ),
       ),
     );
   }
@@ -289,10 +297,6 @@ class _MovementsTabState extends State<MovementsTab> {
 
     // Account Name
     String accountName = 'Unknown Account';
-    final acc = accVm.accounts.firstWhere(
-        (a) => a.id == movement.accountId, 
-        orElse: () => accVm.accounts.isNotEmpty ? accVm.accounts.first : accVm.accounts.first // Safety fallback
-    );
     // Ideally getAccountById in VM would be better but list is small
     // We can iterate straightforwardly since we provided accountsVm
     try {
@@ -327,9 +331,21 @@ class _MovementsTabState extends State<MovementsTab> {
         backgroundColor: iconBg,
         child: Icon(iconData, color: iconColor, size: 20),
       ),
-      title: Text(
-        title,
-        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+      title: Row(
+        children: [
+          Icon(
+            isIncome ? Icons.input : Icons.output,
+            size: 14,
+            color: amountColor,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+            ),
+          ),
+        ],
       ),
       subtitle: Text(
         accountName,

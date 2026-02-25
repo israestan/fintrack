@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../domain/models/movement.dart';
 import '../view_models/movements_view_model.dart';
 import '../view_models/accounts_view_model.dart';
+import '../theme/app_theme.dart';
 
 class MovementDetails extends StatelessWidget {
   final Movement movement;
@@ -79,7 +80,7 @@ class MovementDetails extends StatelessWidget {
                     Text(
                       categoryName,
                       style: const TextStyle(
-                        fontSize: 18,
+                        fontSize: AppFontSizes.title,
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
                       ),
@@ -90,7 +91,7 @@ class MovementDetails extends StatelessWidget {
               Text(
                 '$amountSymbol$formattedAmount',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: AppFontSizes.title,
                   fontWeight: FontWeight.bold,
                   color: amountColor,
                 ),

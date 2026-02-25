@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import '../domain/enums.dart';
+import '../domain/enums/enums.dart';
 import '../domain/models/account.dart';
 import '../domain/models/bank_account.dart';
 import 'color_picker.dart';
 import 'icon_picker.dart';
+import '../theme/app_theme.dart';
 
 class EditAccountDialog extends StatefulWidget {
   final Account account;
@@ -109,11 +110,11 @@ class _EditAccountDialogState extends State<EditAccountDialog> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: Text(label, style: const TextStyle(color: Colors.grey, fontSize: 13)),
+            child: Text(label, style: const TextStyle(color: Colors.grey, fontSize: AppFontSizes.bodySmall)),
           ),
           const SizedBox(width: 12),
           Flexible(
-            child: Text(value, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+            child: Text(value, style: const TextStyle(fontSize: AppFontSizes.body, fontWeight: FontWeight.w600)),
           ),
         ],
       ),

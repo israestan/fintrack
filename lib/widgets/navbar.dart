@@ -25,10 +25,10 @@ class NavBar extends StatelessWidget {
         }
       },
       items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Movements'),
-        BottomNavigationBarItem(icon: Icon(Icons.pie_chart), label: 'Reports'),
-        BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
+        BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Movimientos'),
+        BottomNavigationBarItem(icon: Icon(Icons.pie_chart), label: 'Reportes'),
+        BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Configuración'),
       ],
     );
   }

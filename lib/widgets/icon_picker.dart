@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../domain/enums.dart';
+import '../domain/enums/enums.dart';
+import '../theme/app_theme.dart';
 
 class IconPicker extends StatelessWidget {
   const IconPicker({super.key});
@@ -14,7 +15,7 @@ class IconPicker extends StatelessWidget {
             padding: EdgeInsets.all(16.0),
             child: Text(
               'Selecciona un ícono',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: AppFontSizes.title),
             ),
           ),
           GridView.builder(

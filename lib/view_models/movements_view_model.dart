@@ -22,7 +22,7 @@ class MovementsViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _movements = await _movementsRepo.getAllMovements();
+      _movements = await _movementsRepo.getMovements();
     } catch (e) {
       _error = e.toString();
     } finally {

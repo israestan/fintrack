@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../domain/enums.dart'; // Reusing AccountColor, AccountIcon
+import '../domain/enums/enums.dart'; // Reusing AccountColor, AccountIcon
 import 'color_picker.dart';
 import 'icon_picker.dart';
 import '../view_models/categories_view_model.dart';

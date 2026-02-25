@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import '../theme/app_theme.dart';
-import '../view_models/text_scale_view_model.dart';
-
-class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
+class SettingsScreenTest extends StatefulWidget {
+  const SettingsScreenTest({super.key});
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+  State<SettingsScreenTest> createState() => _SettingsScreenTestState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
-    // State variables for toggles and selections
-    bool _backupEnabled = true;
-    String _selectedCurrency = "USD (\$)";
-    bool _biometricEnabled = true;
-    final TextEditingController _limitController =
+class _SettingsScreenTestState extends State<SettingsScreenTest> {
+  // State variables for toggles and selections
+  bool _backupEnabled = true;
+  String _selectedCurrency = "USD (\$)";
+  bool _biometricEnabled = true;
+  String _fontSize = 'Medium';
+  String _theme = 'Light';
+  final TextEditingController _limitController =
       TextEditingController(text: "2000");
+
+  final Color primaryColor = const Color(0xFF4D1717);
 
   @override
   Widget build(BuildContext context) {
@@ -40,11 +40,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ListTile(
             contentPadding: EdgeInsets.zero,
             title: const Text("Moneda Principal",
-                style: TextStyle(
-                    fontSize: AppFontSizes.body, fontWeight: FontWeight.w500)),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
             subtitle: Text(_selectedCurrency,
-                style: TextStyle(
-                    fontSize: AppFontSizes.small, color: Colors.grey.shade600)),
+                style: TextStyle(fontSize: 13, color: Colors.grey.shade600)),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () {
               // Fake selector
@@ -64,8 +62,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 10),
           const Text(
             "Límite de gasto mensual",
-            style: TextStyle(
-                fontSize: AppFontSizes.body, fontWeight: FontWeight.w500),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 8),
           Container(
@@ -85,31 +82,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     textAlign: TextAlign.right,
                     style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: AppFontSizes.body),
+                        fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
                 const SizedBox(width: 10),
                 const Text("\$",
-                    style: TextStyle(
-                        fontSize: AppFontSizes.subtitle,
-                        fontWeight: FontWeight.bold)),
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ],
             ),
           ),
           const SizedBox(height: 24),
 
-          // Security Section - use Wrap so the help icon moves under the title at large scales
-          Wrap(
-            crossAxisAlignment: WrapCrossAlignment.center,
-            spacing: 8,
+          // Security Section (Requested)
+          Row(
             children: [
               const Text(
                 "Seguridad",
-                style: TextStyle(
-                    fontSize: AppFontSizes.subtitle,
-                    fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
+              const SizedBox(width: 8),
               Tooltip(
                 message:
                     "Protege el acceso a la aplicación usando tu huella o PIN configurado.",
@@ -131,56 +123,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 10),
           const Text(
             "Tamaño de fuente",
-            style: TextStyle(
-                fontSize: AppFontSizes.body, fontWeight: FontWeight.w500),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 10),
-          // Accessibility buttons: use Wrap so items flow to next line when space is limited
-          Wrap(
-            spacing: 10,
-            runSpacing: 10,
+          Row(
             children: [
-              // Use the TextScaleViewModel to reflect and change global scale
-              Consumer<TextScaleViewModel>(builder: (context, vm, _) {
-                return _buildSelectableButton(
-                  "Pequeño",
-                  vm.scale == 1.0,
-                  () {
-                    vm.useSmall();
-                  },
-                );
-              }),
-              Consumer<TextScaleViewModel>(builder: (context, vm, _) {
-                return _buildSelectableButton(
-                  "Mediano",
-                  vm.scale == 1.5,
-                  () {
-                    vm.useMedium();
-                  },
-                );
-              }),
-              Consumer<TextScaleViewModel>(builder: (context, vm, _) {
-                return _buildSelectableButton(
-                  "Grande",
-                  vm.scale == 2.0,
-                  () {
-                    vm.useLarge();
-                  },
-                );
-              }),
+              _buildSelectableButton("Pequeño", _fontSize == 'Small',
+                  () => setState(() => _fontSize = 'Small')),
+              const SizedBox(width: 10),
+              _buildSelectableButton("Mediano", _fontSize == 'Medium',
+                  () => setState(() => _fontSize = 'Medium')),
+              const SizedBox(width: 10),
+              _buildSelectableButton("Grande", _fontSize == 'Large',
+                  () => setState(() => _fontSize = 'Large')),
             ],
           ),
 
           const SizedBox(height: 24),
           _buildSectionTitle("Tema"),
-          const SizedBox(height: 10),
-          Row(children: [
-            _buildThemeCircle(Colors.white, true), // Light
-            const SizedBox(width: 15),
-            _buildThemeCircle(Colors.black, false), // Dark
-            const SizedBox(width: 15),
-            _buildThemeCircle(const Color(0xFF1B5E20), false), // Green
-          ])
+           // Placeholder for theme selection if needed, just mimicking spacing from image
+           const SizedBox(height: 10),
+           Row(
+            children: [
+               _buildThemeCircle(Colors.white, true), // Light
+               const SizedBox(width: 15),
+               _buildThemeCircle(Colors.black, false), // Dark
+               const SizedBox(width: 15),
+               _buildThemeCircle(const Color(0xFF1B5E20), false), // Green
+            ]
+           )
+
         ],
       ),
     );
@@ -192,7 +164,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Text(
         title,
         style: const TextStyle(
-          fontSize: AppFontSizes.subtitle,
+          fontSize: 18,
           fontWeight: FontWeight.bold,
           color: Colors.black87,
         ),
@@ -209,7 +181,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start, // Align top for multiline subtitle
         children: [
           Expanded(
             child: Column(
@@ -218,14 +190,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Text(
                   title,
                   style: const TextStyle(
-                      fontSize: AppFontSizes.body, fontWeight: FontWeight.w500),
+                      fontSize: 16, fontWeight: FontWeight.w500),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   subtitle,
-                  style: TextStyle(
-                      fontSize: AppFontSizes.small,
-                      color: Colors.grey.shade600),
+                  style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
                 ),
               ],
             ),
@@ -234,8 +204,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: AppTheme.primaryColor,
-            activeTrackColor: AppTheme.primaryColor.withOpacity(0.3),
+            activeColor: primaryColor,
+            activeTrackColor: primaryColor.withOpacity(0.3),
             inactiveThumbColor: Colors.white,
             inactiveTrackColor: Colors.grey.shade300,
           ),
@@ -246,53 +216,44 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _buildSelectableButton(
       String text, bool isSelected, VoidCallback onTap) {
-    // Return a compact, wrap-friendly button so text can flow to multiple lines
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-        decoration: BoxDecoration(
-          color: isSelected ? AppTheme.primaryColor : Colors.white,
-          border: Border.all(
-              color: isSelected ? AppTheme.primaryColor : Colors.grey.shade300),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Center(
-          child: Text(
-            text,
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.visible,
-            style: TextStyle(
-              color: isSelected ? Colors.white : Colors.black87,
-              fontWeight: FontWeight.w600,
-              fontSize: AppFontSizes.body,
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: isSelected ? primaryColor : Colors.white,
+            border: Border.all(
+                color: isSelected ? primaryColor : Colors.grey.shade300),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Center(
+            child: Text(
+              text,
+              style: TextStyle(
+                color: isSelected ? Colors.white : Colors.black87,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ),
       ),
     );
   }
-
+  
   Widget _buildThemeCircle(Color color, bool isSelected) {
-    return Container(
-      width: 50,
-      height: 50,
-      decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.grey.shade400, width: 1),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                      color: AppTheme.primaryColor.withOpacity(0.4),
-                      blurRadius: 8,
-                      spreadRadius: 2)
-                ]
-              : []),
-      child: isSelected
-          ? const Icon(Icons.check, color: AppTheme.primaryColor)
-          : null,
-    );
+      return Container(
+          width: 50,
+          height: 50,
+          decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.grey.shade400, width: 1),
+              boxShadow: isSelected ? [
+                  BoxShadow(color: primaryColor.withOpacity(0.4), blurRadius: 8, spreadRadius: 2)
+              ] : []
+          ),
+          child: isSelected ? const Icon(Icons.check, color:  Color(0xFF4D1717)) : null,
+      );
   }
 }

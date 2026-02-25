@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../domain/enums.dart';
+import '../domain/enums/enums.dart';
 import '../domain/models/account.dart';
 import 'color_picker.dart';
 import 'icon_picker.dart';

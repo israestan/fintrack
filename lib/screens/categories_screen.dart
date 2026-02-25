@@ -4,7 +4,7 @@ import '../domain/models/category.dart';
 import '../widgets/create_category_dialog.dart';
 import '../widgets/edit_category_dialog.dart';
 import '../view_models/categories_view_model.dart';
-import '../domain/enums.dart';
+import '../domain/enums/enums.dart';
 
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({super.key});

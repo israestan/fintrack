@@ -34,17 +34,14 @@ class FinTrackDb {
           await db.execute(s);
         }
 
-        // Use batch to insert seed data safely
         final batch = db.batch();
 
-        // Seed default account type
         batch.insert('account_types', {
           'id': 'type_general',
           'code': 'GENERAL',
           'name': 'General',
         }, conflictAlgorithm: ConflictAlgorithm.ignore);
 
-        // Seed default account types
         final types = [
           ('CASH', 'CASH', 'Efectivo'),
           ('CREDIT_CARD', 'CREDIT_CARD', 'Tarjeta de Crédito'),

@@ -8,6 +8,7 @@ import 'package:fintrack/domain/models/movement.dart';
 
 class MovementsRepository {
   /// Create a movement. If [txn] is provided the insertion will use it (for transactions).
+  
   Future<String> createMovement(
     Movement movement, {
     DatabaseExecutor? txn,
@@ -32,7 +33,7 @@ class MovementsRepository {
     return Movement.fromMap(res.first);
   }
 
-  Future<List<Movement>> getAllMovements() async {
+  Future<List<Movement>> getMovements() async {
     final db = await FinTrackDb.instance.db;
     final res = await queryMovementsRows(db, orderBy: 'date DESC');
     return res.map((r) => Movement.fromMap(r)).toList();

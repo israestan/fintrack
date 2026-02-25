@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../testing/test_menu_screen.dart';
 import '../../widgets/accounts_and_categories.dart';
 import '../../widgets/income_expenses_home_overview.dart';
 import '../../widgets/charts/expenses_category_vertical_bar_chart.dart';
@@ -47,7 +48,21 @@ class HomeTab extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       height: 1.2, // Altura de texto consistente
                     ),
+                    semanticsLabel: 'Aplicación FinTrack',
                   ),
+                  const Spacer(),
+                  // IconButton(
+                  //   icon: const Icon(Icons.science,
+                  //       color: Colors.deepOrangeAccent),
+                  //   tooltip: 'Menú de Pruebas',
+                  //   onPressed: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //           builder: (context) => const TestMenuScreen()),
+                  //     );
+                  //   },
+                  // ),
                 ],
               ),
             ),
@@ -57,18 +72,55 @@ class HomeTab extends StatelessWidget {
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 16), // Espacio inicial compensando
-                const Center(child: TotalBalance()),
-                const SizedBox(height: 32),
-                const AccountsAndCategories(),
-                const SizedBox(height: 32),
-                const IncomeExpensesHomeOverview(),
-                const SizedBox(height: 32),
-                const ExpensesCategoryVerticalBarChart(),
-              ],
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                // Si el ancho es mayor a 600 (típicamente landscape en móviles o tablets)
+                if (constraints.maxWidth > 600) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 16),
+                      const Center(child: TotalBalance()),
+                      const SizedBox(height: 32),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Expanded(
+                            flex: 1,
+                            child: AccountsAndCategories(),
+                          ),
+                          const SizedBox(width: 32),
+                          Expanded(
+                            flex: 1,
+                            child: Column(
+                              children: const [
+                                IncomeExpensesHomeOverview(),
+                                SizedBox(height: 32),
+                                ExpensesCategoryVerticalBarChart(),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                }
+
+                // Diseño original en vertical (Portrait)
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    SizedBox(height: 16),
+                    Center(child: TotalBalance()),
+                    SizedBox(height: 32),
+                    AccountsAndCategories(),
+                    SizedBox(height: 32),
+                    IncomeExpensesHomeOverview(),
+                    SizedBox(height: 32),
+                    ExpensesCategoryVerticalBarChart(),
+                  ],
+                );
+              },
             ),
           ),
         ),

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../domain/enums.dart';
+import '../domain/enums/enums.dart';
 import 'color_picker.dart';
 import 'icon_picker.dart';
 import '../view_models/categories_view_model.dart';
 import '../domain/models/category.dart';
+import '../theme/app_theme.dart';
 
 class EditCategoryDialog extends StatefulWidget {
   final Category category;
@@ -113,7 +114,7 @@ class _EditCategoryDialogState extends State<EditCategoryDialog> {
               'Editar Categoría',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 20,
+                fontSize: AppFontSizes.titleLarge,
                 fontWeight: FontWeight.bold,
               ),
             ),
