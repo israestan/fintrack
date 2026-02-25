@@ -40,7 +40,6 @@ class AccountsAndCategories extends StatelessWidget {
             // Responsive approach using Wrap with constrained children:
 
             final width = constraints.maxWidth;
-            final itemWidth = (width - 16) / 2; // Subtract spacing
             
             // If itemWidth is too small for content, Wrap will push second item down?
             // No, Custom 'Flow' or just Wrap.
@@ -50,6 +49,7 @@ class AccountsAndCategories extends StatelessWidget {
             // To detect overflow *before* rendering is hard. 
             // Better strategy: switch to Column if textScaleFactor is high or screen is narrow.
             
+            // ignore: deprecated_member_use
             final textScale = MediaQuery.of(context).textScaleFactor;
             final bool useColumn = textScale > 1.3 || width < 320;
 

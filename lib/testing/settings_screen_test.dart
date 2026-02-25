@@ -10,10 +10,9 @@ class SettingsScreenTest extends StatefulWidget {
 class _SettingsScreenTestState extends State<SettingsScreenTest> {
   // State variables for toggles and selections
   bool _backupEnabled = true;
-  String _selectedCurrency = "USD (\$)";
+  final String _selectedCurrency = "USD (\$)";
   bool _biometricEnabled = true;
   String _fontSize = 'Medium';
-  String _theme = 'Light';
   final TextEditingController _limitController =
       TextEditingController(text: "2000");
 
