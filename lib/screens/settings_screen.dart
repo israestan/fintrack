@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../theme/app_theme.dart';
+import '../view_models/auth_view_model.dart';
 import '../view_models/text_scale_view_model.dart';
+import 'create_pin_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -12,10 +14,9 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-    // State variables for toggles and selections
     bool _backupEnabled = true;
-    String _selectedCurrency = "USD (\$)";
-    bool _biometricEnabled = true;
+    final String _selectedCurrency = "USD (\$)";
+    bool _toggling = false;
     final TextEditingController _limitController =
       TextEditingController(text: "2000");
 
@@ -60,6 +61,59 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           const SizedBox(height: 24),
 
+                    _buildSectionTitle("Accesibilidad"),
+          const SizedBox(height: 10),
+          const Text(
+            "Tamaño de fuente",
+            style: TextStyle(
+                fontSize: AppFontSizes.body, fontWeight: FontWeight.w500),
+          ),
+          const SizedBox(height: 10),
+          // Accessibility buttons: keep 3 buttons in one row and show font size visually
+          Row(
+            children: [
+              Expanded(
+                child: Consumer<TextScaleViewModel>(builder: (context, vm, _) {
+                  return _buildSelectableButton(
+                    "Pequeño",
+                    vm.scale == 1.0,
+                    () {
+                      vm.useSmall();
+                    },
+                    fontSize: AppFontSizes.small,
+                  );
+                }),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Consumer<TextScaleViewModel>(builder: (context, vm, _) {
+                  return _buildSelectableButton(
+                    "Mediano",
+                    vm.scale == 1.5,
+                    () {
+                      vm.useMedium();
+                    },
+                    fontSize: AppFontSizes.body,
+                  );
+                }),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Consumer<TextScaleViewModel>(builder: (context, vm, _) {
+                  return _buildSelectableButton(
+                    "Grande",
+                    vm.scale == 2.0,
+                    () {
+                      vm.useLarge();
+                    },
+                    fontSize: AppFontSizes.title,
+                  );
+                }),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 24),
           _buildSectionTitle("Límites Financieros"),
           const SizedBox(height: 10),
           const Text(
@@ -119,59 +173,78 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ],
           ),
-          _buildSwitchTile(
-            title: "Activar seguridad biométrica / PIN",
-            subtitle: "Solicitar autenticación al abrir la app.",
-            value: _biometricEnabled,
-            onChanged: (val) => setState(() => _biometricEnabled = val),
-          ),
+          Consumer<AuthViewModel>(builder: (context, authVm, _) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Toggle PIN
+                _buildSwitchTile(
+                  title: "Activar seguridad por PIN",
+                  subtitle: "Solicitar un PIN de 4 dígitos al abrir la app.",
+                  value: authVm.config.hasPin,
+                  enabled: !_toggling,
+                  onChanged: (val) async {
+                    if (val) {
+                      final created = await Navigator.of(context).push<bool>(
+                        MaterialPageRoute(
+                          builder: (_) => const CreatePinScreen(),
+                        ),
+                      );
+                      if (created == true && mounted) {
+                        await authVm.loadConfig();
+                      }
+                    } else {
+                      setState(() => _toggling = true);
+                      try {
+                        await authVm.disablePinForSettings();
+                      } finally {
+                        if (mounted) setState(() => _toggling = false);
+                      }
+                    }
+                  },
+                ),
+                // Toggle biométrico
+                _buildSwitchTile(
+                  title: "Activar seguridad biométrica",
+                  subtitle: "Solicitar autenticación biométrica al abrir la app.",
+                  value: authVm.config.useBiometrics,
+                  enabled: !_toggling,
+                  onChanged: (val) async {
+                    // Invariante: la biometría requiere PIN como respaldo.
+                    // Si se activa bio sin PIN configurado, crear PIN primero.
+                    if (val && !authVm.config.hasPin) {
+                      final created = await Navigator.of(context).push<bool>(
+                        MaterialPageRoute(
+                          builder: (_) => const CreatePinScreen(),
+                        ),
+                      );
+                      if (created != true || !mounted) return;
+                      await authVm.loadConfig();
+                    }
+                    setState(() => _toggling = true);
+                    try {
+                      final ok = await authVm.toggleBiometricWithAuth(val);
+                      if (!ok && mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(authVm.errorMessage ??
+                              'Autenticación fallida. No se aplicó el cambio.'),
+                        ));
+                      }
+                    } finally {
+                      if (mounted) setState(() => _toggling = false);
+                    }
+                  },
+                ),
+              ],
+            );
+          }),
+          if (_toggling)
+            const Padding(
+              padding: EdgeInsets.only(top: 4),
+              child: LinearProgressIndicator(),
+            ),
           const SizedBox(height: 24),
 
-          _buildSectionTitle("Accesibilidad"),
-          const SizedBox(height: 10),
-          const Text(
-            "Tamaño de fuente",
-            style: TextStyle(
-                fontSize: AppFontSizes.body, fontWeight: FontWeight.w500),
-          ),
-          const SizedBox(height: 10),
-          // Accessibility buttons: use Wrap so items flow to next line when space is limited
-          Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children: [
-              // Use the TextScaleViewModel to reflect and change global scale
-              Consumer<TextScaleViewModel>(builder: (context, vm, _) {
-                return _buildSelectableButton(
-                  "Pequeño",
-                  vm.scale == 1.0,
-                  () {
-                    vm.useSmall();
-                  },
-                );
-              }),
-              Consumer<TextScaleViewModel>(builder: (context, vm, _) {
-                return _buildSelectableButton(
-                  "Mediano",
-                  vm.scale == 1.5,
-                  () {
-                    vm.useMedium();
-                  },
-                );
-              }),
-              Consumer<TextScaleViewModel>(builder: (context, vm, _) {
-                return _buildSelectableButton(
-                  "Grande",
-                  vm.scale == 2.0,
-                  () {
-                    vm.useLarge();
-                  },
-                );
-              }),
-            ],
-          ),
-
-          const SizedBox(height: 24),
           _buildSectionTitle("Tema"),
           const SizedBox(height: 10),
           Row(children: [
@@ -204,6 +277,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     required String title,
     required String subtitle,
     required bool value,
+    bool enabled = true,
     required Function(bool) onChanged,
   }) {
     return Padding(
@@ -233,7 +307,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(width: 10),
           Switch(
             value: value,
-            onChanged: onChanged,
+            onChanged: enabled ? onChanged : null,
             activeColor: AppTheme.primaryColor,
             activeTrackColor: AppTheme.primaryColor.withOpacity(0.3),
             inactiveThumbColor: Colors.white,
@@ -245,7 +319,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildSelectableButton(
-      String text, bool isSelected, VoidCallback onTap) {
+      String text, bool isSelected, VoidCallback onTap,
+      {double? fontSize}) {
     // Return a compact, wrap-friendly button so text can flow to multiple lines
     return InkWell(
       onTap: onTap,
@@ -263,10 +338,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.visible,
+            textScaleFactor: 1.0,
             style: TextStyle(
               color: isSelected ? Colors.white : Colors.black87,
               fontWeight: FontWeight.w600,
-              fontSize: AppFontSizes.body,
+              fontSize: fontSize ?? AppFontSizes.body,
             ),
           ),
         ),

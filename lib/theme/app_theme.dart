@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 
 class AppFontSizes {
-  // Base font sizes reduced by 15% as requested (multiplied by 0.85)
-  static const double extraSmall = 9.35; // 11.0 * 0.85
-  static const double small = 10.2; // 12.0 * 0.85
-  static const double bodySmall = 11.05; // 13.0 * 0.85
-  static const double body = 11.9; // 14.0 * 0.85
-  static const double subtitle = 13.6; // 16.0 * 0.85
-  static const double title = 15.3; // 18.0 * 0.85
-  static const double titleLarge = 17.0; // 20.0 * 0.85
-  static const double headline = 18;   // 24.0 * 0.85
-  static const double display = 24;    // 40.0 * 0.85
+  static const double extraSmall = 7; 
+  static const double small = 8; 
+  static const double bodySmall = 10; 
+  static const double body = 10; 
+  static const double subtitle = 12; 
+  static const double title = 12; 
+  static const double titleLarge = 12.0; 
+  static const double headline = 16;   
+  static const double display = 22;    
 }
 
 class AppTheme {

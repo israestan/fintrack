@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
 import '../data/repositories/movements_repo.dart';
-import '../data/repositories/accounts_repo.dart';
+import '../data/repositories/transfers_repo.dart';
 import '../domain/models/movement.dart';
 
 class MovementsViewModel extends ChangeNotifier {
   final MovementsRepository _movementsRepo = MovementsRepository();
-  final AccountsRepository _accountsRepo = AccountsRepository();
+  final TransfersRepository _transfersRepo = TransfersRepository();
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -37,29 +37,9 @@ class MovementsViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // 1. Create the movement in DB
-      await _movementsRepo.createMovement(movement);
-      
-      // Refresh local list
+      // Creates the movement and updates the account balance atomically.
+      await _movementsRepo.createMovementAndUpdateBalance(movement);
       await loadMovements();
-
-      // 2. Update the associated account balance
-      final account = await _accountsRepo.getAccountById(movement.accountId);
-      if (account != null) {
-        int newBalance = account.actualBalanceCents;
-        
-        // Income increases balance, Expense decreases balance
-        if (movement.type == 'INCOME') {
-          newBalance += movement.amountCents;
-        } else {
-          newBalance -= movement.amountCents;
-        }
-        
-        await _accountsRepo.updateAccount(
-          account.id, 
-          {'actual_balance_cents': newBalance}
-        );
-      }
     } catch (e) {
       _error = e.toString();
       rethrow;
@@ -75,31 +55,17 @@ class MovementsViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // 1. Update the associated account balance (Reverse logic)
-      final account = await _accountsRepo.getAccountById(movement.accountId);
-      if (account != null) {
-        int newBalance = account.actualBalanceCents;
-        
-        // If we are deleting an Income, we remove the money.
-        // If we are deleting an Outcome (Expense), we give the money back.
-        if (movement.type == 'INCOME') {
-          newBalance -= movement.amountCents;
-        } else {
-          newBalance += movement.amountCents;
-        }
-        
-        await _accountsRepo.updateAccount(
-          account.id, 
-          {'actual_balance_cents': newBalance}
-        );
+      // If the movement belongs to a transfer, delete the whole transfer
+      // so both legs and the balance reversals are handled atomically.
+      final transfer = await _transfersRepo.getTransferByMovementId(movement.id);
+      if (transfer != null) {
+        await _transfersRepo.deleteTransfer(transfer.id);
+      } else {
+        // Atomically reverts the balance and removes the movement.
+        await _movementsRepo.deleteMovementAndRevertBalance(movement.id);
       }
 
-      // 2. Delete the movement from DB
-      await _movementsRepo.deleteMovement(movement.id);
-      
-      // Refresh local list
       await loadMovements();
-
     } catch (e) {
       _error = e.toString();
       rethrow;

@@ -24,10 +24,7 @@ class BiometricService {
     try {
       return await _auth.authenticate(
         localizedReason: 'Por favor, autentícate para acceder a FinTrack',
-        /* options: const AuthenticationOptions(
-          stickyAuth: true,
-          biometricOnly: true,
-        ), */
+        biometricOnly: false,
       );
     } on PlatformException {
       return false;

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'view_models/auth_view_model.dart';
 import 'view_models/splash_view_model.dart';
 import 'view_models/accounts_view_model.dart';
 import 'view_models/navigation_view_model.dart';
 import 'view_models/categories_view_model.dart';
 import 'view_models/movements_view_model.dart';
 import 'view_models/text_scale_view_model.dart';
+import 'view_models/transfers_view_model.dart';
 import 'screens/splash_screen.dart';
 import 'theme/app_theme.dart';
 
@@ -18,9 +20,11 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => TextScaleViewModel()),
         ChangeNotifierProvider(create: (_) => SplashViewModel()),
+        ChangeNotifierProvider(create: (_) => AuthViewModel()..loadConfig()),
         ChangeNotifierProvider(create: (_) => AccountsViewModel()..loadAccounts()),
         ChangeNotifierProvider(create: (_) => CategoriesViewModel()..loadAll()),
         ChangeNotifierProvider(create: (_) => MovementsViewModel()),
+        ChangeNotifierProvider(create: (_) => TransfersViewModel()),
         ChangeNotifierProvider(create: (_) => NavigationViewModel()),
       ],
       child: const MyApp(),
@@ -40,7 +44,7 @@ class MyApp extends StatelessWidget {
         // Apply global text scale factor from TextScaleViewModel
         final scale = context.watch<TextScaleViewModel>().scale;
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
+          data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(scale)),
           child: child!,
         );
       },

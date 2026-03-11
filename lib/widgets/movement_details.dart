@@ -189,7 +189,8 @@ class MovementDetails extends StatelessWidget {
                         final accVm = Provider.of<AccountsViewModel>(context, listen: false);
 
                         await msgVm.deleteMovement(movement);
-                        // Refresh accounts to reflect balance change
+                        // Refresh accounts so that balance changes (from either a simple
+                        // movement deletion or a full transfer reversal) are reflected in UI.
                         await accVm.loadAccounts();
 
                         if (context.mounted) {

@@ -108,4 +108,66 @@ class MovementsRepository {
     final db = await FinTrackDb.instance.db;
     return await deleteMovementRow(db, id);
   }
+
+  /// Creates a movement and updates the account balance in a single atomic
+  /// transaction. Prefer this over calling [createMovement] + a separate
+  /// account update to avoid partial-write inconsistencies.
+  Future<String> createMovementAndUpdateBalance(Movement movement) async {
+    final db = await FinTrackDb.instance.db;
+    final id = movement.id.isNotEmpty ? movement.id : generateUuidV4();
+
+    await db.transaction((txn) async {
+      final row = movement.toMap()..['id'] = id;
+      final toInsert = withCreateTimestamps(row);
+      await insertMovementRow(txn, toInsert);
+
+      // Update account balance atomically using arithmetic to avoid read-modify-write races.
+      if (movement.type == 'INCOME') {
+        await txn.rawUpdate(
+          'UPDATE accounts SET actual_balance_cents = actual_balance_cents + ? WHERE id = ?',
+          [movement.amountCents, movement.accountId],
+        );
+      } else {
+        await txn.rawUpdate(
+          'UPDATE accounts SET actual_balance_cents = actual_balance_cents - ? WHERE id = ?',
+          [movement.amountCents, movement.accountId],
+        );
+      }
+    });
+
+    return id;
+  }
+
+  /// Deletes a non-transfer movement and reverts the account balance in a
+  /// single atomic transaction. Do NOT call this for movements that belong to
+  /// a transfer — use [TransfersRepository.deleteTransfer] instead.
+  Future<void> deleteMovementAndRevertBalance(String movementId) async {
+    final db = await FinTrackDb.instance.db;
+
+    await db.transaction((txn) async {
+      final rows = await queryMovementsRows(
+        txn,
+        where: 'id = ?',
+        whereArgs: [movementId],
+        limit: 1,
+      );
+      if (rows.isEmpty) throw Exception('Movement not found: $movementId');
+      final movement = Movement.fromMap(rows.first);
+
+      // Revert the balance change. Income added money → subtract it back.
+      if (movement.type == 'INCOME') {
+        await txn.rawUpdate(
+          'UPDATE accounts SET actual_balance_cents = actual_balance_cents - ? WHERE id = ?',
+          [movement.amountCents, movement.accountId],
+        );
+      } else {
+        await txn.rawUpdate(
+          'UPDATE accounts SET actual_balance_cents = actual_balance_cents + ? WHERE id = ?',
+          [movement.amountCents, movement.accountId],
+        );
+      }
+
+      await deleteMovementRow(txn, movementId);
+    });
+  }
 }
