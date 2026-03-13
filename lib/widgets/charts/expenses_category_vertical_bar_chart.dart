@@ -2,18 +2,31 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../domain/enums/enums.dart';
+import '../../theme/app_theme.dart';
 import '../../view_models/categories_view_model.dart';
 import '../../view_models/movements_view_model.dart';
 
 class ExpensesCategoryVerticalBarChart extends StatelessWidget {
-  const ExpensesCategoryVerticalBarChart({super.key});
+  final DateTime? dateFrom;
+  final DateTime? dateTo;
+
+  const ExpensesCategoryVerticalBarChart({super.key, this.dateFrom, this.dateTo});
 
   @override
   Widget build(BuildContext context) {
     return Consumer2<MovementsViewModel, CategoriesViewModel>(
       builder: (context, movementsVm, categoriesVm, child) {
-        // 1. Filter Expenses
-        final expenses = movementsVm.movements.where((m) => m.type == 'OUTCOME').toList();
+        // 1. Filter Expenses (and optionally by date range)
+        final expenses = movementsVm.movements.where((m) {
+          if (m.type != 'OUTCOME') return false;
+          if (dateFrom != null || dateTo != null) {
+            final date = DateTime.tryParse(m.date);
+            if (date == null) return false;
+            if (dateFrom != null && date.isBefore(dateFrom!)) return false;
+            if (dateTo != null && date.isAfter(dateTo!)) return false;
+          }
+          return true;
+        }).toList();
 
         if (expenses.isEmpty) {
           return Container(
@@ -107,7 +120,7 @@ class ExpensesCategoryVerticalBarChart extends StatelessWidget {
                 const Text(
                   'Gastos por Categoría',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: AppFontSizes.title,
                     fontWeight: FontWeight.bold,
                   ),
                   semanticsLabel: 'Gastos por Categoría',
@@ -119,128 +132,125 @@ class ExpensesCategoryVerticalBarChart extends StatelessWidget {
                   child: SizedBox(
                     height: 250,
                     child: BarChart(
-                      BarChartData(
-                    alignment: BarChartAlignment.spaceAround,
-                    maxY: maxAmount * 1.2, // Add some top padding
-                    barTouchData: BarTouchData(
-                      enabled: true,
-                      touchTooltipData: BarTouchTooltipData(
-                        getTooltipColor: (group) => Colors.blueGrey,
-                        getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                          return BarTooltipItem(
-                            '${chartData[groupIndex].name}\n',
-                            const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                            children: <TextSpan>[
-                              TextSpan(
-                                text: '\$${rod.toY.toStringAsFixed(2)}',
-                                style: const TextStyle(
-                                  color: Colors.yellow,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
+                    BarChartData(
+                      alignment: BarChartAlignment.spaceAround,
+                      maxY: maxAmount * 1.2,
+                      barTouchData: BarTouchData(
+                        enabled: true,
+                        touchTooltipData: BarTouchTooltipData(
+                          getTooltipColor: (group) => Colors.blueGrey,
+                          getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                            return BarTooltipItem(
+                              '${chartData[groupIndex].name}\n',
+                              const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: '\$${rod.toY.toStringAsFixed(2)}',
+                                  style: const TextStyle(
+                                    color: Colors.yellow,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
-                    titlesData: FlTitlesData(
-                      show: true,
-                      topTitles: const AxisTitles(
-                        sideTitles: SideTitles(showTitles: false),
-                      ),
-                      rightTitles: const AxisTitles(
-                        sideTitles: SideTitles(showTitles: false),
-                      ),
-                      leftTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          reservedSize: 40,
-                          getTitlesWidget: (value, meta) {
-                            if (value == meta.max || value == meta.min) {
-                              return const SizedBox.shrink();
-                            }
-                            return Text(
-                              value >= 1000 
-                                  ? '${(value/1000).toStringAsFixed(1)}k' 
-                                  : value.toStringAsFixed(0),
-                              style: const TextStyle(
-                                color: Colors.grey,
-                                fontSize: 10,
-                              ),
+                              ],
                             );
                           },
                         ),
                       ),
-                      bottomTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          reservedSize: 60, // Space for rotated text if needed
-                          getTitlesWidget: (value, meta) {
-                            final index = value.toInt();
-                            if (index < 0 || index >= chartData.length) {
-                              return const SizedBox.shrink();
-                            }
-                            // Show first 3 chars or initials if many bars? 
-                            // Or rotate. For now let's just show initials if name is long
-                            final name = chartData[index].name;
-                            return Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Text(
-                                name.length > 5 ? '${name.substring(0, 4)}.' : name,
-                                style: const TextStyle(
-                                  color: Colors.black87,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            );
-                          },
+                      titlesData: FlTitlesData(
+                        show: true,
+                        topTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
                         ),
-                      ),
-                    ),
-                    gridData: FlGridData(
-                      show: true,
-                      drawVerticalLine: false,
-                      horizontalInterval: maxAmount / 5,
-                      getDrawingHorizontalLine: (value) => FlLine(
-                        color: Colors.grey.shade200,
-                        strokeWidth: 1,
-                      ),
-                    ),
-                    borderData: FlBorderData(
-                      show: false,
-                    ),
-                    barGroups: chartData.asMap().entries.map((entry) {
-                      final index = entry.key;
-                      final data = entry.value;
-                      return BarChartGroupData(
-                        x: index,
-                        barRods: [
-                          BarChartRodData(
-                            toY: data.amount,
-                            color: data.color,
-                            width: 16,
-                            borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(4),
-                            ),
-                            backDrawRodData: BackgroundBarChartRodData(
-                              show: true,
-                              toY: maxAmount * 1.1,
-                              color: Colors.grey.shade100,
-                            ),
+                        rightTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        leftTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            reservedSize: 40,
+                            getTitlesWidget: (value, meta) {
+                              if (value == meta.max || value == meta.min) {
+                                return const SizedBox.shrink();
+                              }
+                              return Text(
+                                value >= 1000
+                                    ? '${(value / 1000).toStringAsFixed(1)}k'
+                                    : value.toStringAsFixed(0),
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: AppFontSizes.bodySmall,
+                                ),
+                              );
+                            },
                           ),
-                        ],
-                      );
-                    }).toList(),
+                        ),
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            reservedSize: 60,
+                            getTitlesWidget: (value, meta) {
+                              final index = value.toInt();
+                              if (index < 0 || index >= chartData.length) {
+                                return const SizedBox.shrink();
+                              }
+                              final name = chartData[index].name;
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Text(
+                                  name.length > 5 ? '${name.substring(0, 4)}.' : name,
+                                  style: const TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: AppFontSizes.bodySmall,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      gridData: FlGridData(
+                        show: true,
+                        drawVerticalLine: false,
+                        horizontalInterval: maxAmount / 5,
+                        getDrawingHorizontalLine: (value) => FlLine(
+                          color: Colors.grey.shade200,
+                          strokeWidth: 1,
+                        ),
+                      ),
+                      borderData: FlBorderData(show: false),
+                      barGroups: chartData.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final data = entry.value;
+                        return BarChartGroupData(
+                          x: index,
+                          barRods: [
+                            BarChartRodData(
+                              toY: data.amount,
+                              color: data.color,
+                              width: 16,
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(4),
+                              ),
+                              backDrawRodData: BackgroundBarChartRodData(
+                                show: true,
+                                toY: maxAmount * 1.1,
+                                color: Colors.grey.shade100,
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    ),
                   ),
                 ),
-                ),),
+              ),
               ],
             ),
           ),

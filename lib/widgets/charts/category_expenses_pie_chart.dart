@@ -1,20 +1,32 @@
-import 'package:fl_chart/fl_chart.dart';
+﻿import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../domain/enums/enums.dart';
-import '../view_models/categories_view_model.dart';
-import '../view_models/movements_view_model.dart';
-import '../theme/app_theme.dart';
+import '../../domain/enums/enums.dart';
+import '../../view_models/categories_view_model.dart';
+import '../../view_models/movements_view_model.dart';
+import '../../theme/app_theme.dart';
 
 class CategoryExpensesPieChart extends StatelessWidget {
-  const CategoryExpensesPieChart({super.key});
+  final DateTime? dateFrom;
+  final DateTime? dateTo;
+
+  const CategoryExpensesPieChart({super.key, this.dateFrom, this.dateTo});
 
   @override
   Widget build(BuildContext context) {
     return Consumer2<MovementsViewModel, CategoriesViewModel>(
       builder: (context, movementsVm, categoriesVm, child) {
-        // 1. Filter Expenses
-        final expenses = movementsVm.movements.where((m) => m.type == 'OUTCOME').toList();
+        // 1. Filter Expenses (and optionally by date range)
+        final expenses = movementsVm.movements.where((m) {
+          if (m.type != 'OUTCOME') return false;
+          if (dateFrom != null || dateTo != null) {
+            final date = DateTime.tryParse(m.date);
+            if (date == null) return false;
+            if (dateFrom != null && date.isBefore(dateFrom!)) return false;
+            if (dateTo != null && date.isAfter(dateTo!)) return false;
+          }
+          return true;
+        }).toList();
 
         if (expenses.isEmpty) {
            return Container(
@@ -31,7 +43,7 @@ class CategoryExpensesPieChart extends StatelessWidget {
               ],
             ),
              child: const Center(
-               child: Text('No hay gastos registrados aún.', style: TextStyle(color: Colors.grey)),
+               child: Text('No hay gastos registrados aÃºn.', style: TextStyle(color: Colors.grey)),
              ),
            );
         }
@@ -53,7 +65,7 @@ class CategoryExpensesPieChart extends StatelessWidget {
         final List<_ChartData> chartData = [];
         
         categoryTotals.forEach((catId, amount) {
-          String name = 'Sin categoría';
+          String name = 'Sin categorÃ­a';
           Color color = Colors.grey;
 
           if (catId != 'unknown') {
@@ -100,7 +112,7 @@ class CategoryExpensesPieChart extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Gastos por Categoría',
+                'Gastos por CategorÃ­a',
                 style: TextStyle(
                   fontSize: AppFontSizes.title,
                   fontWeight: FontWeight.bold,

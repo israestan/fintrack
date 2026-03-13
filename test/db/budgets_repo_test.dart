@@ -17,16 +17,12 @@ void main() {
     await FinTrackDb.instance.close();
   });
 
-  test('createBudget, addAccountToBudget and removeAccountFromBudget', () async {
+  test('createBudget, addCategoryToBudget and removeCategoryFromBudget', () async {
     final db = await FinTrackDb.instance.db;
-    // prepare account
+    // prepare category
     await db.rawInsert(
-      'INSERT OR IGNORE INTO account_types (id, code, name) VALUES (?, ?, ?)',
-      ['t-b', 'TB', 'TypeB'],
-    );
-    await db.rawInsert(
-      'INSERT OR IGNORE INTO accounts (id, name, color, icon, description, initial_balance_cents, actual_balance_cents, active, type_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      ['acct-b2', 'AcctB2', '#000', 'i', null, 0, 0, 1, 't-b'],
+      'INSERT OR IGNORE INTO categories (id, parent_id, icon, color, name, description, type) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      ['cat-b2', null, 'i', '#000', 'CatB2', 'desc', 'OUTCOME'],
     );
 
     final repo = BudgetsRepository();
@@ -41,10 +37,10 @@ void main() {
     final created = await repo.createBudget(b);
     expect(created.id, id);
 
-    // add account
-    await repo.addAccountToBudget(id, 'acct-b2');
+    // add category
+    await repo.addCategoryToBudget(id, 'cat-b2');
     final rows = await db.query(
-      'budget_accounts',
+      'budget_categories',
       where: 'budget_id = ?',
       whereArgs: [id],
     );
@@ -52,13 +48,13 @@ void main() {
 
     // duplicate add should fail (PK)
     try {
-      await repo.addAccountToBudget(id, 'acct-b2');
+      await repo.addCategoryToBudget(id, 'cat-b2');
       fail('Expected duplicate insert to throw');
     } catch (e) {
       expect(e, isNotNull);
     }
 
-    final removed = await repo.removeAccountFromBudget(id, 'acct-b2');
+    final removed = await repo.removeCategoryFromBudget(id, 'cat-b2');
     expect(removed, 1);
   });
 }

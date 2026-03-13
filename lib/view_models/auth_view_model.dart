@@ -1,4 +1,5 @@
-import 'package:flutter/foundation.dart';
+import 'dart:async';
+import 'package:flutter/widgets.dart';
 import 'package:local_auth/local_auth.dart' show BiometricType;
 import 'package:fintrack/data/repositories/security_repos.dart';
 import 'package:fintrack/data/services/biometric_service.dart';
@@ -10,7 +11,7 @@ enum AuthState {
   error;
 }
 
-class AuthViewModel extends ChangeNotifier {
+class AuthViewModel extends ChangeNotifier with WidgetsBindingObserver {
   final SecurityRepository _securityRepo;
   final BiometricService _biometricService;
 
@@ -19,6 +20,9 @@ class AuthViewModel extends ChangeNotifier {
   String? _errorMessage;
   List<BiometricType> _availableBiometrics = [];
   UserConfig _config = const UserConfig(hasPin: false, useBiometrics: false);
+
+  Timer? _inactivityTimer;
+  bool _observerRegistered = false;
 
   AuthViewModel({
     SecurityRepository? securityRepo,
@@ -32,8 +36,68 @@ class AuthViewModel extends ChangeNotifier {
   List<BiometricType> get availableBiometrics => _availableBiometrics;
   UserConfig get config => _config;
 
+  @override
+  void dispose() {
+    _cancelInactivityTimer();
+    if (_observerRegistered) {
+      WidgetsBinding.instance.removeObserver(this);
+      _observerRegistered = false;
+    }
+    super.dispose();
+  }
+
+  // ─── Lifecycle observer ───────────────────────────────────────────────────
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused &&
+        _state == AuthState.authenticated &&
+        _config.autoLockEnabled) {
+      lock();
+    }
+  }
+
+  // ─── Timer helpers ────────────────────────────────────────────────────────
+
+  void _startInactivityTimer() {
+    _cancelInactivityTimer();
+    _inactivityTimer = Timer(
+      Duration(minutes: _config.autoLockMinutes),
+      lock,
+    );
+  }
+
+  void _cancelInactivityTimer() {
+    _inactivityTimer?.cancel();
+    _inactivityTimer = null;
+  }
+
+  /// Resets the inactivity countdown on every user interaction.
+  /// No-op when the app is not authenticated or auto-lock is inactive.
+  void resetInactivityTimer() {
+    if (_state != AuthState.authenticated) return;
+    if (!_config.autoLockEnabled) return;
+    if (!_config.hasPin && !_config.useBiometrics) return;
+    _startInactivityTimer();
+  }
+
+  /// Immediately locks the app, requiring re-authentication.
+  void lock() {
+    if (!_config.hasPin && !_config.useBiometrics) return;
+    _cancelInactivityTimer();
+    _errorMessage = null;
+    _setState(AuthState.unauthenticated);
+  }
+
   void _setState(AuthState state) {
     _state = state;
+    if (state == AuthState.authenticated &&
+        _config.autoLockEnabled &&
+        (_config.hasPin || _config.useBiometrics)) {
+      _startInactivityTimer();
+    } else {
+      _cancelInactivityTimer();
+    }
     notifyListeners();
   }
 
@@ -43,6 +107,10 @@ class AuthViewModel extends ChangeNotifier {
   }
 
   Future<void> init() async {
+    if (!_observerRegistered) {
+      WidgetsBinding.instance.addObserver(this);
+      _observerRegistered = true;
+    }
     _availableBiometrics = await _biometricService.getAvailableBiometrics();
     await loadConfig();
 
@@ -141,6 +209,28 @@ class AuthViewModel extends ChangeNotifier {
       _setState(AuthState.unauthenticated);
     } catch (e) {
       _setError("Error eliminando PIN: $e");
+    }
+  }
+
+  // ─── Auto-lock configuration ──────────────────────────────────────────────
+
+  Future<void> setAutoLockEnabled(bool enabled) async {
+    await _securityRepo.setAutoLockEnabled(enabled);
+    await loadConfig();
+    if (_state == AuthState.authenticated) {
+      if (enabled && (_config.hasPin || _config.useBiometrics)) {
+        _startInactivityTimer();
+      } else {
+        _cancelInactivityTimer();
+      }
+    }
+  }
+
+  Future<void> setAutoLockMinutes(int minutes) async {
+    await _securityRepo.setAutoLockMinutes(minutes);
+    await loadConfig();
+    if (_state == AuthState.authenticated && _config.autoLockEnabled) {
+      _startInactivityTimer();
     }
   }
 }

@@ -9,6 +9,9 @@ import 'view_models/categories_view_model.dart';
 import 'view_models/movements_view_model.dart';
 import 'view_models/text_scale_view_model.dart';
 import 'view_models/transfers_view_model.dart';
+import 'view_models/budgets_view_model.dart';
+import 'view_models/goals_view_model.dart';
+import 'view_models/reports_view_model.dart';
 import 'screens/splash_screen.dart';
 import 'theme/app_theme.dart';
 
@@ -25,6 +28,9 @@ void main() async {
         ChangeNotifierProvider(create: (_) => CategoriesViewModel()..loadAll()),
         ChangeNotifierProvider(create: (_) => MovementsViewModel()),
         ChangeNotifierProvider(create: (_) => TransfersViewModel()),
+        ChangeNotifierProvider(create: (_) => BudgetsViewModel()),
+        ChangeNotifierProvider(create: (_) => GoalsViewModel()),
+        ChangeNotifierProvider(create: (_) => ReportsViewModel()),
         ChangeNotifierProvider(create: (_) => NavigationViewModel()),
       ],
       child: const MyApp(),
@@ -45,7 +51,13 @@ class MyApp extends StatelessWidget {
         final scale = context.watch<TextScaleViewModel>().scale;
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(scale)),
-          child: child!,
+          // Reset inactivity timer on every pointer event (RNF-08)
+          child: Listener(
+            behavior: HitTestBehavior.translucent,
+            onPointerDown: (_) =>
+                context.read<AuthViewModel>().resetInactivityTimer(),
+            child: child!,
+          ),
         );
       },
       home: const SplashScreen(),

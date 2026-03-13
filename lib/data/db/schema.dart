@@ -14,7 +14,7 @@ const String TABLE_CATEGORIES = 'categories';
 const String TABLE_MOVEMENTS = 'movements';
 const String TABLE_TRANSFERS = 'transfers';
 const String TABLE_BUDGET = 'budget';
-const String TABLE_BUDGET_ACCOUNTS = 'budget_accounts';
+const String TABLE_BUDGET_CATEGORIES = 'budget_categories';
 
 // Common columns
 const String COL_ID = 'id';
@@ -58,9 +58,9 @@ const String COL_BUDGET_PERIOD = 'period';
 const String COL_BUDGET_TARGET_DATE = 'target_date';
 const String COL_BUDGET_LIMIT = 'limit_cents';
 
-// budget_accounts
-const String COL_BUDGET_ACCOUNT_ACCOUNT_ID = 'account_id';
-const String COL_BUDGET_ACCOUNT_BUDGET_ID = 'budget_id';
+// budget_categories
+const String COL_BUDGET_CATEGORY_BUDGET_ID = 'budget_id';
+const String COL_BUDGET_CATEGORY_CATEGORY_ID = 'category_id';
 
 // DDL list (version 1)
 final List<String> ddlV1 = [
@@ -206,12 +206,12 @@ CREATE TABLE budget (
 ''',
 
   '''
-CREATE TABLE budget_accounts (
-  account_id TEXT NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
-  budget_id  TEXT NOT NULL REFERENCES budget(id) ON DELETE CASCADE,
-  created_at TEXT NULL,
-  updated_at TEXT NULL,
-  PRIMARY KEY (account_id, budget_id)
+CREATE TABLE budget_categories (
+  budget_id   TEXT NOT NULL REFERENCES budget(id) ON DELETE CASCADE,
+  category_id TEXT NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
+  created_at  TEXT NULL,
+  updated_at  TEXT NULL,
+  PRIMARY KEY (budget_id, category_id)
 );
 ''',
 ];

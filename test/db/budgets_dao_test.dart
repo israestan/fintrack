@@ -17,22 +17,15 @@ void main() {
       if (s.isEmpty) continue;
       await db.execute(s);
     }
-    // prepare an account for budget_accounts FK
-    await db.insert('account_types', {
-      'id': 't1',
-      'code': 'T1',
-      'name': 'Type1',
-    });
-    await db.insert('accounts', {
-      'id': 'acct-b',
-      'name': 'AcctB',
-      'color': '#000',
+    // prepare a category for budget_categories FK
+    await db.insert('categories', {
+      'id': 'cat-b',
+      'parent_id': null,
       'icon': 'i',
-      'description': null,
-      'initial_balance_cents': 0,
-      'actual_balance_cents': 0,
-      'active': 1,
-      'type_id': 't1',
+      'color': '#000',
+      'name': 'CatB',
+      'description': 'desc',
+      'type': 'OUTCOME',
     });
   });
 
@@ -74,32 +67,32 @@ void main() {
     );
     expect(res2.first['limit_cents'], 90000);
 
-    // add account to budget
-    final ba = {
-      'account_id': 'acct-b',
+    // add category to budget
+    final bc = {
       'budget_id': 'bud-1',
+      'category_id': 'cat-b',
       'created_at': null,
       'updated_at': null,
     };
-    final insertedBa = await insertBudgetAccountRow(db, ba);
-    expect(insertedBa, greaterThan(0));
+    final insertedBc = await insertBudgetCategoryRow(db, bc);
+    expect(insertedBc, greaterThan(0));
 
-    final baRows = await queryBudgetAccountRows(
+    final bcRows = await queryBudgetCategoryRows(
       db,
       where: 'budget_id = ?',
       whereArgs: ['bud-1'],
     );
-    expect(baRows.length, 1);
+    expect(bcRows.length, 1);
 
-    // deleting budget should cascade to budget_accounts
+    // deleting budget should cascade to budget_categories
     final deleted = await deleteBudgetRow(db, 'bud-1');
     expect(deleted, equals(1));
 
-    final baAfter = await queryBudgetAccountRows(
+    final bcAfter = await queryBudgetCategoryRows(
       db,
       where: 'budget_id = ?',
       whereArgs: ['bud-1'],
     );
-    expect(baAfter, isEmpty);
+    expect(bcAfter, isEmpty);
   });
 }

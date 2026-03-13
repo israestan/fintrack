@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../widgets/accounts_and_categories.dart';
+import '../../widgets/budget_overview.dart';
 import '../../widgets/income_expenses_home_overview.dart';
 import '../../widgets/charts/expenses_category_vertical_bar_chart.dart';
 import '../../widgets/total_balance.dart';
@@ -101,6 +102,8 @@ class HomeTab extends StatelessWidget {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 32),
+                      const BudgetOverview(),
                     ],
                   );
                 }
@@ -117,6 +120,8 @@ class HomeTab extends StatelessWidget {
                     IncomeExpensesHomeOverview(),
                     SizedBox(height: 32),
                     ExpensesCategoryVerticalBarChart(),
+                    SizedBox(height: 32),
+                    BudgetOverview(),
                   ],
                 );
               },

@@ -1,15 +1,15 @@
 import 'package:sqflite_common/sqlite_api.dart';
 
-const String _table = 'budget_accounts';
+const String _table = 'budget_categories';
 
-Future<int> insertBudgetAccountRow(
+Future<int> insertBudgetCategoryRow(
   DatabaseExecutor db,
   Map<String, Object?> row,
 ) async {
   return await db.insert(_table, row);
 }
 
-Future<List<Map<String, Object?>>> queryBudgetAccountRows(
+Future<List<Map<String, Object?>>> queryBudgetCategoryRows(
   DatabaseExecutor db, {
   String? where,
   List<Object?>? whereArgs,
@@ -27,14 +27,14 @@ Future<List<Map<String, Object?>>> queryBudgetAccountRows(
   );
 }
 
-Future<int> deleteBudgetAccountRow(
+Future<int> deleteBudgetCategoryRow(
   DatabaseExecutor db,
-  String accountId,
   String budgetId,
+  String categoryId,
 ) async {
   return await db.delete(
     _table,
-    where: 'account_id = ? AND budget_id = ?',
-    whereArgs: [accountId, budgetId],
+    where: 'budget_id = ? AND category_id = ?',
+    whereArgs: [budgetId, categoryId],
   );
 }

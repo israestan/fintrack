@@ -84,4 +84,25 @@ extension AccountTypeExt on AccountType {
         return 'Presupuesto';
     }
   }
+
+  IconData get toIconData {
+    switch (this) {
+      case AccountType.CASH:
+        return Icons.payments_outlined;
+      case AccountType.CREDIT_CARD:
+        return Icons.credit_card;
+      case AccountType.SAVINGS_ACCOUNT:
+        return Icons.savings_outlined;
+      case AccountType.CURRENT_ACCOUNT:
+        return Icons.account_balance_outlined;
+      case AccountType.GOAL:
+        return Icons.flag_outlined;
+      case AccountType.DEBT:
+        return Icons.arrow_circle_down_outlined;
+      case AccountType.LOAN:
+        return Icons.request_quote_outlined;
+      case AccountType.BUDGET:
+        return Icons.pie_chart_outline;
+    }
+  }
 }

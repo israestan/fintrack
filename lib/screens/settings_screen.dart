@@ -235,6 +235,70 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     }
                   },
                 ),
+                // Auto-lock toggle
+                _buildSwitchTile(
+                  title: "Bloqueo automático por inactividad",
+                  subtitle: (authVm.config.hasPin || authVm.config.useBiometrics)
+                      ? "Bloquear la app tras ${authVm.config.autoLockMinutes} min sin actividad."
+                      : "Requiere PIN o biometría activa.",
+                  value: authVm.config.autoLockEnabled,
+                  enabled: !_toggling &&
+                      (authVm.config.hasPin || authVm.config.useBiometrics),
+                  onChanged: (val) async {
+                    setState(() => _toggling = true);
+                    try {
+                      await authVm.setAutoLockEnabled(val);
+                    } finally {
+                      if (mounted) setState(() => _toggling = false);
+                    }
+                  },
+                ),
+                // Minutes selector (visible only when auto-lock is on)
+                if (authVm.config.autoLockEnabled &&
+                    (authVm.config.hasPin || authVm.config.useBiometrics))
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "Tiempo de inactividad",
+                            style: TextStyle(
+                              fontSize: AppFontSizes.body,
+                              color: Colors.grey.shade700,
+                            ),
+                          ),
+                        ),
+                        DropdownButton<int>(
+                          value: authVm.config.autoLockMinutes,
+                          underline: const SizedBox.shrink(),
+                          items: [1, 2, 5, 10, 15].map((m) {
+                            return DropdownMenuItem<int>(
+                              value: m,
+                              child: Text(
+                                '$m min',
+                                style: const TextStyle(
+                                    fontSize: AppFontSizes.body),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: _toggling
+                              ? null
+                              : (val) async {
+                                  if (val == null) return;
+                                  setState(() => _toggling = true);
+                                  try {
+                                    await authVm.setAutoLockMinutes(val);
+                                  } finally {
+                                    if (mounted) {
+                                      setState(() => _toggling = false);
+                                    }
+                                  }
+                                },
+                        ),
+                      ],
+                    ),
+                  ),
               ],
             );
           }),

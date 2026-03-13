@@ -1,6 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
 
+import 'migrations/migration_v2_20260311.dart';
 import 'schema.dart';
 
 class FinTrackDb {
@@ -21,7 +22,7 @@ class FinTrackDb {
 
     _db = await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onConfigure: (Database db) async {
         await db.execute('PRAGMA foreign_keys = ON');
       },
@@ -64,8 +65,7 @@ class FinTrackDb {
         await batch.commit(noResult: true);
       },
       onUpgrade: (Database db, int oldVersion, int newVersion) async {
-        // Placeholder for future migrations.
-        // Implement migrations here when schema version increases.
+        if (oldVersion < 2) await migrateV1toV2(db);
       },
     );
 

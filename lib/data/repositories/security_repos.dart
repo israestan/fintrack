@@ -8,6 +8,8 @@ class SecurityRepository {
 
   static const String _pinKey = 'fintrack_app_pin';
   static const String _biometricFlagKey = 'fintrack_use_biometric';
+  static const String _autoLockEnabledKey = 'fintrack_auto_lock_enabled';
+  static const String _autoLockMinutesKey = 'fintrack_auto_lock_minutes';
 
   SecurityRepository({BiometricService? biometricService})
       : _biometricService = biometricService ?? BiometricService();
@@ -23,8 +25,9 @@ class SecurityRepository {
 
   Future<bool> deletePin() async {
     await _secureStorage.delete(key: _pinKey);
-    // Also disable biometrics if PIN is removed (as fallback is required)
+    // Invariant: biometrics and auto-lock both require PIN as fallback.
     await setBiometricEnabled(false);
+    await setAutoLockEnabled(false);
     return true;
   }
 
@@ -58,12 +61,33 @@ class SecurityRepository {
     return await _biometricService.authenticate();
   }
 
+  Future<void> setAutoLockEnabled(bool enabled) async {
+    await _secureStorage.write(
+      key: _autoLockEnabledKey,
+      value: enabled.toString(),
+    );
+  }
+
+  Future<void> setAutoLockMinutes(int minutes) async {
+    await _secureStorage.write(
+      key: _autoLockMinutesKey,
+      value: minutes.toString(),
+    );
+  }
+
   Future<UserConfig> getUserConfig() async {
     final pinExists = await hasPin();
     final bioEnabled = await isBiometricEnabled();
+    final autoLockEnabled =
+        (await _secureStorage.read(key: _autoLockEnabledKey)) == 'true';
+    final autoLockMinutesStr =
+        await _secureStorage.read(key: _autoLockMinutesKey);
+    final autoLockMinutes = int.tryParse(autoLockMinutesStr ?? '5') ?? 5;
     return UserConfig(
       hasPin: pinExists,
       useBiometrics: bioEnabled,
+      autoLockEnabled: autoLockEnabled,
+      autoLockMinutes: autoLockMinutes,
     );
   }
 }
