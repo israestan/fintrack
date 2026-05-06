@@ -10,7 +10,7 @@ class SplashViewModel extends ChangeNotifier {
 
     await Future.delayed(
       const Duration(seconds: 2),
-    ); // Simular carga mínima para ver splash
+    );
 
     _isInitialized = true;
     notifyListeners();

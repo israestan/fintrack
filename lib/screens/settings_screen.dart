@@ -37,8 +37,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: ListView(
         padding: const EdgeInsets.all(20.0),
         children: [
+          /*
           _buildSectionTitle("General"),
-          ListTile(
+           ListTile(
             contentPadding: EdgeInsets.zero,
             title: const Text("Moneda Principal",
                 style: TextStyle(
@@ -52,16 +53,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text("Selector de moneda (Demo)")));
             },
-          ),
+          ), 
           _buildSwitchTile(
             title: "Copia de seguridad local",
             subtitle: "Guardar respaldo automático diariamente.",
             value: _backupEnabled,
             onChanged: (val) => setState(() => _backupEnabled = val),
-          ),
+          ),*/
           const SizedBox(height: 24),
-
-                    _buildSectionTitle("Accesibilidad"),
+          _buildSectionTitle("Accesibilidad"),
           const SizedBox(height: 10),
           const Text(
             "Tamaño de fuente",
@@ -69,7 +69,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 fontSize: AppFontSizes.body, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 10),
-          // Accessibility buttons: keep 3 buttons in one row and show font size visually
+          //Accessibility
           Row(
             children: [
               Expanded(
@@ -114,7 +114,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
 
           const SizedBox(height: 24),
-          _buildSectionTitle("Límites Financieros"),
+          /* _buildSectionTitle("Límites Financieros"),
           const SizedBox(height: 10),
           const Text(
             "Límite de gasto mensual",
@@ -151,9 +151,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 24), */
 
-          // Security Section - use Wrap so the help icon moves under the title at large scales
+          //Security Section
           Wrap(
             crossAxisAlignment: WrapCrossAlignment.center,
             spacing: 8,
@@ -308,8 +308,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: LinearProgressIndicator(),
             ),
           const SizedBox(height: 24),
-
-          _buildSectionTitle("Tema"),
+          /* _buildSectionTitle("Tema"),
           const SizedBox(height: 10),
           Row(children: [
             _buildThemeCircle(Colors.white, true), // Light
@@ -317,7 +316,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _buildThemeCircle(Colors.black, false), // Dark
             const SizedBox(width: 15),
             _buildThemeCircle(const Color(0xFF1B5E20), false), // Green
-          ])
+          ]) */
         ],
       ),
     );

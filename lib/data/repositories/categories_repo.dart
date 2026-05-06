@@ -59,7 +59,6 @@ class CategoriesRepository {
     return rows.map((r) => Category.fromMap(r)).toList();
   }
 
-  /// Returns the subtree starting at `rootId` (inclusive) using a recursive CTE.
   Future<List<Category>> listHierarchy(String rootId) async {
     final db = await FinTrackDb.instance.db;
     final sql = '''WITH RECURSIVE subtree AS (

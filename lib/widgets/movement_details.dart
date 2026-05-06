@@ -32,8 +32,6 @@ class MovementDetails extends StatelessWidget {
       decimalDigits: 2,
     ).format(movement.amountCents / 100);
 
-    // Format Date: e.g., "5 de noviembre, 2023 - 14:30"
-    // Using default locale or specifically Spanish if set in main
     final dateObj = DateTime.parse(movement.date);
     final formattedDate = DateFormat.yMMMMd('es').add_jm().format(dateObj);
 
@@ -48,7 +46,6 @@ class MovementDetails extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Handle for dragging visual cue
           Center(
             child: Container(
               width: 40,
@@ -61,7 +58,6 @@ class MovementDetails extends StatelessWidget {
           ),
           const SizedBox(height: 24),
 
-          // Header: Icon + Amount + Title
           Row(
             children: [
               Container(
@@ -127,7 +123,6 @@ class MovementDetails extends StatelessWidget {
           const Divider(),
           const SizedBox(height: 16),
 
-          // Details Section
           _buildDetailRow(Icons.calendar_today, 'Fecha', formattedDate),
           const SizedBox(height: 16),
           _buildDetailRow(Icons.account_balance_wallet, 'Cuenta', accountName),
@@ -140,7 +135,6 @@ class MovementDetails extends StatelessWidget {
 
           const SizedBox(height: 32),
 
-          // Action Buttons
           Row(
             children: [
               Expanded(
@@ -189,12 +183,10 @@ class MovementDetails extends StatelessWidget {
                         final accVm = Provider.of<AccountsViewModel>(context, listen: false);
 
                         await msgVm.deleteMovement(movement);
-                        // Refresh accounts so that balance changes (from either a simple
-                        // movement deletion or a full transfer reversal) are reflected in UI.
                         await accVm.loadAccounts();
 
                         if (context.mounted) {
-                          Navigator.pop(context); // Close BottomSheet
+                          Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                                 content: Text('Movimiento eliminado correctamente')),

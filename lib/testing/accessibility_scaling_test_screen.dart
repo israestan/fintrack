@@ -14,7 +14,6 @@ class _AccessibilityScalingTestScreenState extends State<AccessibilityScalingTes
 
   @override
   Widget build(BuildContext context) {
-    // Aplicamos el escalado de texto dinámico (100% o 200%)
     final textScaler = TextScaler.linear(_isScaled ? 2.0 : 1.0);
 
     return Scaffold(
@@ -27,13 +26,12 @@ class _AccessibilityScalingTestScreenState extends State<AccessibilityScalingTes
               Switch(
                 value: _isScaled,
                 onChanged: (val) => setState(() => _isScaled = val),
-                activeColor: Colors.white,
+                activeThumbColor: Colors.white,
               ),
             ],
           )
         ],
       ),
-      // Envolvemos el contenido en un MediaQuery para forzar el TextScaler
       body: MediaQuery(
         data: MediaQuery.of(context).copyWith(textScaler: textScaler),
         child: SingleChildScrollView(
@@ -46,13 +44,8 @@ class _AccessibilityScalingTestScreenState extends State<AccessibilityScalingTes
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 24),
-              
-              // Widget real 1: Balance Total
               const Center(child: TotalBalance()),
-              
               const SizedBox(height: 32),
-              
-              // Widget real 2: Resumen de Ingresos y Gastos
               const IncomeExpensesHomeOverview(),
             ],
           ),

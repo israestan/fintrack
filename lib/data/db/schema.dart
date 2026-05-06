@@ -1,6 +1,3 @@
-// Schema constants and DDL for FinTrack (version 1)
-// Generated from FinTrack_Flutter_SQLite_Implementation.md
-
 // ignore_for_file: constant_identifier_names
 
 const String TABLE_ACCOUNT_TYPES = 'account_types';
@@ -20,8 +17,6 @@ const String TABLE_BUDGET_CATEGORIES = 'budget_categories';
 const String COL_ID = 'id';
 const String COL_CREATED_AT = 'created_at';
 const String COL_UPDATED_AT = 'updated_at';
-
-// accounts columns
 const String COL_ACCOUNT_NAME = 'name';
 const String COL_ACCOUNT_COLOR = 'color';
 const String COL_ACCOUNT_ICON = 'icon';
@@ -30,8 +25,6 @@ const String COL_ACCOUNT_INITIAL_BALANCE = 'initial_balance_cents';
 const String COL_ACCOUNT_ACTUAL_BALANCE = 'actual_balance_cents';
 const String COL_ACCOUNT_ACTIVE = 'active';
 const String COL_ACCOUNT_TYPE_ID = 'type_id';
-
-// categories
 const String COL_CATEGORY_PARENT_ID = 'parent_id';
 const String COL_CATEGORY_ICON = 'icon';
 const String COL_CATEGORY_COLOR = 'color';
@@ -47,24 +40,17 @@ const String COL_MOVEMENT_AMOUNT = 'amount_cents';
 const String COL_MOVEMENT_DATE = 'date';
 const String COL_MOVEMENT_CATEGORY_ID = 'category_id';
 const String COL_MOVEMENT_ACCOUNT_ID = 'account_id';
-
-// transfers
 const String COL_TRANSFER_INCOME_MOVEMENT_ID = 'income_movement_id';
 const String COL_TRANSFER_OUTCOME_MOVEMENT_ID = 'outcome_movement_id';
-
-// budget
 const String COL_BUDGET_ENTITY = 'entity';
 const String COL_BUDGET_PERIOD = 'period';
 const String COL_BUDGET_TARGET_DATE = 'target_date';
 const String COL_BUDGET_LIMIT = 'limit_cents';
-
-// budget_categories
 const String COL_BUDGET_CATEGORY_BUDGET_ID = 'budget_id';
 const String COL_BUDGET_CATEGORY_CATEGORY_ID = 'category_id';
 
 // DDL list (version 1)
 final List<String> ddlV1 = [
-  // '''PRAGMA foreign_keys = ON;''', // Moved to onConfigure
   '''
 CREATE TABLE account_types (
   id   TEXT PRIMARY KEY,

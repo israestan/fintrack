@@ -17,7 +17,6 @@ class _CreateAccountDialogState extends State<CreateAccountDialog> {
   final _bankNameController = TextEditingController();
   final _accountNumberController = TextEditingController();
 
-  // Estado local del formulario
   var _selectedColor = AccountColor.GREY;
   var _selectedIcon = AccountIcon.OTHER;
   var _selectedType = AccountType.CASH;

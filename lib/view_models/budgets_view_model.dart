@@ -15,11 +15,9 @@ class BudgetsViewModel extends ChangeNotifier {
   List<Budget> _budgets = [];
   List<Budget> get budgets => _budgets;
 
-  // Gasto actual por budget id (en centavos)
   final Map<String, int> _spentByCentsByBudgetId = {};
   int spentCentsFor(String budgetId) => _spentByCentsByBudgetId[budgetId] ?? 0;
 
-  // Categorías vinculadas por budget id
   final Map<String, List<Category>> _categoriesByBudgetId = {};
   List<Category> categoriesFor(String budgetId) =>
       _categoriesByBudgetId[budgetId] ?? [];
@@ -31,7 +29,6 @@ class BudgetsViewModel extends ChangeNotifier {
 
     try {
       _budgets = await _budgetsRepo.getAllBudgets();
-      // Cargar gasto actual y categorías de cada presupuesto en paralelo
       await Future.wait(
         _budgets.map((b) async {
           _spentByCentsByBudgetId[b.id] =

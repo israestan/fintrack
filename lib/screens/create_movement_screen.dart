@@ -232,9 +232,6 @@ class _CreateMovementScreenState extends State<CreateMovementScreen> {
                           ? vm.incomeCategories 
                           : vm.expenseCategories;
                       
-                      // Add "No Category" option at the beginning
-                      // We build list manually to include it
-                      
                       return ListView.separated(
                         controller: controller,
                         itemCount: categories.length + 1, // +1 for "No Category"

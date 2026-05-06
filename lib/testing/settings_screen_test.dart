@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 
 class SettingsScreenTest extends StatefulWidget {
@@ -8,7 +10,6 @@ class SettingsScreenTest extends StatefulWidget {
 }
 
 class _SettingsScreenTestState extends State<SettingsScreenTest> {
-  // State variables for toggles and selections
   bool _backupEnabled = true;
   final String _selectedCurrency = "USD (\$)";
   bool _biometricEnabled = true;
@@ -44,7 +45,6 @@ class _SettingsScreenTestState extends State<SettingsScreenTest> {
                 style: TextStyle(fontSize: 13, color: Colors.grey.shade600)),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () {
-              // Fake selector
               ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text("Selector de moneda (Demo)")));
             },
@@ -93,7 +93,6 @@ class _SettingsScreenTestState extends State<SettingsScreenTest> {
           ),
           const SizedBox(height: 24),
 
-          // Security Section (Requested)
           Row(
             children: [
               const Text(
@@ -140,7 +139,6 @@ class _SettingsScreenTestState extends State<SettingsScreenTest> {
 
           const SizedBox(height: 24),
           _buildSectionTitle("Tema"),
-           // Placeholder for theme selection if needed, just mimicking spacing from image
            const SizedBox(height: 10),
            Row(
             children: [
@@ -203,7 +201,7 @@ class _SettingsScreenTestState extends State<SettingsScreenTest> {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: primaryColor,
+            activeThumbColor: primaryColor,
             activeTrackColor: primaryColor.withOpacity(0.3),
             inactiveThumbColor: Colors.white,
             inactiveTrackColor: Colors.grey.shade300,

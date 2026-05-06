@@ -27,9 +27,7 @@ class FinTrackDb {
         await db.execute('PRAGMA foreign_keys = ON');
       },
       onCreate: (Database db, int version) async {
-        // Execute all DDL statements defined in schema.dart
         for (final stmt in ddlV1) {
-          // Trim and skip empty statements
           final s = stmt.trim();
           if (s.isEmpty) continue;
           await db.execute(s);

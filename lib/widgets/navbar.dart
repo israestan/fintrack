@@ -8,19 +8,16 @@ class NavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Escuchamos el ViewModel para saber qué tab está activo
     final navViewModel = context.watch<NavigationViewModel>();
 
     return BottomNavigationBar(
       currentIndex: navViewModel.currentIndex,
       onTap: (index) {
         if (index == 3) {
-          // Caso especial: Settings navega a otra pantalla (push)
           Navigator.of(
             context,
           ).push(MaterialPageRoute(builder: (_) => const SettingsScreen()));
         } else {
-          // Navegación normal
           context.read<NavigationViewModel>().setIndex(index);
         }
       },

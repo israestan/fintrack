@@ -1,6 +1,5 @@
 import 'time_utils.dart';
 
-/// Apply create timestamps for rows before insert.
 Map<String, Object?> withCreateTimestamps(Map<String, Object?> row) {
   final now = nowIsoUtc();
   final result = Map<String, Object?>.from(row);
@@ -9,8 +8,6 @@ Map<String, Object?> withCreateTimestamps(Map<String, Object?> row) {
   return result;
 }
 
-/// Apply update timestamp for rows before update.
-/// Removes `created_at` to avoid accidental modification.
 Map<String, Object?> withUpdateTimestamp(Map<String, Object?> row) {
   final now = nowIsoUtc();
   final result = Map<String, Object?>.from(row);

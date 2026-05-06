@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:fintrack/screens/categories_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,23 +35,8 @@ class AccountsAndCategories extends StatelessWidget {
           const SizedBox(height: 12),
           LayoutBuilder(
           builder: (context, constraints) {
-            // Check if we have enough width for side-by-side buttons
-            // A rough heuristic: if width < 300 or text scale is > 1.5, start stacking
-            // Or better: let Wrap handle it naturally.
-            // But we want them to be full width when stacked, and shared width when side-by-side.
-            // Responsive approach using Wrap with constrained children:
-
             final width = constraints.maxWidth;
             
-            // If itemWidth is too small for content, Wrap will push second item down?
-            // No, Custom 'Flow' or just Wrap.
-            // Let's use a Wrap where children try to be 48% but if text breaks, they wrap?
-            // Actually, the user asked for "when text overflows".
-            // Since we use Expanded in Row currently, text overflow means text wrapping inside the button or elipsis.
-            // To detect overflow *before* rendering is hard. 
-            // Better strategy: switch to Column if textScaleFactor is high or screen is narrow.
-            
-            // ignore: deprecated_member_use
             final textScale = MediaQuery.of(context).textScaleFactor;
             final bool useColumn = textScale > 1.3 || width < 320;
 
@@ -122,7 +109,6 @@ class AccountsAndCategories extends StatelessWidget {
           }
         ),
         const SizedBox(height: 16),
-        // Usamos IntrinsicHeight para que el contenedor se adapte a la altura de la tarjeta más alta
         IntrinsicHeight(
           child: Consumer2<AccountsViewModel, MovementsViewModel>(
             builder: (context, accountsVm, movementsVm, child) {

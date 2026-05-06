@@ -37,7 +37,6 @@ class MovementsViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // Creates the movement and updates the account balance atomically.
       await _movementsRepo.createMovementAndUpdateBalance(movement);
       await loadMovements();
     } catch (e) {
@@ -55,13 +54,10 @@ class MovementsViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // If the movement belongs to a transfer, delete the whole transfer
-      // so both legs and the balance reversals are handled atomically.
       final transfer = await _transfersRepo.getTransferByMovementId(movement.id);
       if (transfer != null) {
         await _transfersRepo.deleteTransfer(transfer.id);
       } else {
-        // Atomically reverts the balance and removes the movement.
         await _movementsRepo.deleteMovementAndRevertBalance(movement.id);
       }
 

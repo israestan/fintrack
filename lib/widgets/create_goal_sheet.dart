@@ -113,7 +113,6 @@ class _CreateGoalSheetState extends State<CreateGoalSheet> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Handle bar
                 Center(
                   child: Container(
                     width: 40,
@@ -134,7 +133,6 @@ class _CreateGoalSheetState extends State<CreateGoalSheet> {
                 ),
                 const SizedBox(height: 24),
 
-                // Color e Ícono
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -192,7 +190,7 @@ class _CreateGoalSheetState extends State<CreateGoalSheet> {
                 ),
                 const SizedBox(height: 14),
 
-                // Objetivo / descripción
+
                 TextFormField(
                   controller: _objectiveController,
                   decoration: const InputDecoration(
@@ -208,7 +206,7 @@ class _CreateGoalSheetState extends State<CreateGoalSheet> {
                 ),
                 const SizedBox(height: 14),
 
-                // Monto objetivo
+
                 TextFormField(
                   controller: _targetAmountController,
                   decoration: const InputDecoration(
@@ -234,7 +232,7 @@ class _CreateGoalSheetState extends State<CreateGoalSheet> {
                 ),
                 const SizedBox(height: 14),
 
-                // Fecha límite
+
                 InkWell(
                   onTap: _pickDate,
                   child: InputDecorator(

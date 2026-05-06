@@ -56,7 +56,6 @@ class _EditCategoryDialogState extends State<EditCategoryDialog> {
 
   Future<void> _pickColor() async {
     FocusManager.instance.primaryFocus?.unfocus();
-    //await Future.delayed(const Duration(milliseconds: 50));
 
     if (!mounted) return;
 
@@ -71,7 +70,6 @@ class _EditCategoryDialogState extends State<EditCategoryDialog> {
 
   Future<void> _pickIcon() async {
     FocusManager.instance.primaryFocus?.unfocus();
-    //await Future.delayed(const Duration(milliseconds: 50));
 
     if (!mounted) return;
 

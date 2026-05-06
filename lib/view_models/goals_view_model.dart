@@ -75,7 +75,6 @@ class GoalsViewModel extends ChangeNotifier {
     }
   }
 
-  /// Cierra la meta: transfiere el saldo a una cuenta destino y la desactiva.
   Future<void> closeGoal({
     required String goalAccountId,
     required String targetAccountId,
@@ -104,7 +103,6 @@ class GoalsViewModel extends ChangeNotifier {
     }
   }
 
-  /// Elimina la meta sin transferir el saldo (descarta el dinero ahorrado).
   Future<void> deleteGoal(String goalAccountId) async {
     _isLoading = true;
     _error = null;

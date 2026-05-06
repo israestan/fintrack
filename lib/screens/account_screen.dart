@@ -233,8 +233,6 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 }
 
-// ─── Private widgets ──────────────────────────────────────────────────────────
-
 class _SummaryCard extends StatelessWidget {
   const _SummaryCard({required this.accounts, required this.formatCents});
   final List<Account> accounts;

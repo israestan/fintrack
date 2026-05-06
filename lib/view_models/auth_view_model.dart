@@ -46,8 +46,6 @@ class AuthViewModel extends ChangeNotifier with WidgetsBindingObserver {
     super.dispose();
   }
 
-  // ─── Lifecycle observer ───────────────────────────────────────────────────
-
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused &&
@@ -56,8 +54,6 @@ class AuthViewModel extends ChangeNotifier with WidgetsBindingObserver {
       lock();
     }
   }
-
-  // ─── Timer helpers ────────────────────────────────────────────────────────
 
   void _startInactivityTimer() {
     _cancelInactivityTimer();
@@ -72,8 +68,6 @@ class AuthViewModel extends ChangeNotifier with WidgetsBindingObserver {
     _inactivityTimer = null;
   }
 
-  /// Resets the inactivity countdown on every user interaction.
-  /// No-op when the app is not authenticated or auto-lock is inactive.
   void resetInactivityTimer() {
     if (_state != AuthState.authenticated) return;
     if (!_config.autoLockEnabled) return;
@@ -81,7 +75,6 @@ class AuthViewModel extends ChangeNotifier with WidgetsBindingObserver {
     _startInactivityTimer();
   }
 
-  /// Immediately locks the app, requiring re-authentication.
   void lock() {
     if (!_config.hasPin && !_config.useBiometrics) return;
     _cancelInactivityTimer();
@@ -115,8 +108,6 @@ class AuthViewModel extends ChangeNotifier with WidgetsBindingObserver {
     await loadConfig();
 
     if (_config.useBiometrics || _config.hasPin) {
-      // Solo marca que se requiere auth. El diálogo lo lanza AuthScreen
-      // una vez la navegación ya terminó, evitando bloquear el Splash.
       _setState(AuthState.unauthenticated);
     } else {
       _setState(AuthState.authenticated);
@@ -182,16 +173,12 @@ class AuthViewModel extends ChangeNotifier with WidgetsBindingObserver {
     }
   }
 
-  /// Requiere autenticación biométrica antes de cambiar el estado del toggle.
-  /// Retorna true si el cambio fue aplicado satisfactoriamente.
   Future<bool> toggleBiometricWithAuth(bool enable) async {
     final authenticated = await _securityRepo.authenticateWithBiometrics();
     if (!authenticated) return false;
     return await toggleBiometric(enable);
   }
 
-  /// Deshabilita el PIN desde Configuración sin alterar el estado de autenticación.
-  /// También deshabilita la biometría (invariante: bio requiere PIN).
   Future<bool> disablePinForSettings() async {
     try {
       await _securityRepo.deletePin();
@@ -212,8 +199,7 @@ class AuthViewModel extends ChangeNotifier with WidgetsBindingObserver {
     }
   }
 
-  // ─── Auto-lock configuration ──────────────────────────────────────────────
-
+  //Autolock configuration
   Future<void> setAutoLockEnabled(bool enabled) async {
     await _securityRepo.setAutoLockEnabled(enabled);
     await loadConfig();

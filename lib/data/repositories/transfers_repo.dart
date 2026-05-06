@@ -9,8 +9,6 @@ import 'package:fintrack/data/repositories/movements_repo.dart';
 class TransfersRepository {
   final MovementsRepository _movementsRepo = MovementsRepository();
 
-  /// Create a transfer as a single transaction: outcome movement (from), income movement (to), transfer record.
-  /// Optionally updates `accounts.actual_balance_cents` (default true).
   Future<String> createTransfer({
     required String fromAccountId,
     required String toAccountId,
@@ -29,20 +27,7 @@ class TransfersRepository {
     final now = dateIso ?? nowIsoUtc();
 
     await db.transaction((txn) async {
-      // Outcome movement (money leaving fromAccount)
       final outcomeId = await _movementsRepo.createMovement(
-        // build movement map via Movement model map shape
-        // Using minimal required fields: id generated inside createMovement
-        // type = 'OUTCOME'
-        // icon required by schema, use 'transfer'
-        // account_id = fromAccountId
-        // amount_cents positive
-        // date = now
-        // description optional
-        // category_id null
-        // created_at/updated_at handled by helper
-        // Pass txn to ensure transaction context
-        // Create Movement object inline
         Movement(
           id: '',
           type: 'OUTCOME',
@@ -71,7 +56,6 @@ class TransfersRepository {
         txn: txn,
       );
 
-      // Insert transfer record
       final transferRow = {
         'id': transferId,
         'income_movement_id': incomeId,
@@ -82,7 +66,6 @@ class TransfersRepository {
       await insertTransferRow(txn, transferRow);
 
       if (updateAccountBalances) {
-        // Validate that the origin account has sufficient balance before subtracting.
         final fromRows = await txn.query(
           'accounts',
           columns: ['actual_balance_cents'],
@@ -102,7 +85,6 @@ class TransfersRepository {
           );
         }
 
-        // Update balances atomically using arithmetic.
         await txn.rawUpdate(
           'UPDATE accounts SET actual_balance_cents = actual_balance_cents - ? WHERE id = ?',
           [amountCents, fromAccountId],
@@ -117,7 +99,6 @@ class TransfersRepository {
     return transferId;
   }
 
-  /// Retrieves a transfer by its ID
   Future<Transfer?> getTransferById(String transferId) async {
     final db = await FinTrackDb.instance.db;
     final rows = await queryTransfersRows(db, where: 'id = ?', whereArgs: [transferId]);
@@ -125,7 +106,6 @@ class TransfersRepository {
     return Transfer.fromMap(rows.first);
   }
 
-  /// Retrieves the transfer associated with a given movement ID (whether it's the income or outcome movement).
   Future<Transfer?> getTransferByMovementId(String movementId) async {
     final db = await FinTrackDb.instance.db;
     final rows = await queryTransfersRows(
@@ -162,22 +142,18 @@ class TransfersRepository {
 
       // Reverse account balances
       if (updateAccountBalances) {
-        // Income movement gave money to toAccountId. We must subtract it.
         await txn.rawUpdate(
           'UPDATE accounts SET actual_balance_cents = actual_balance_cents - ? WHERE id = ?',
           [incomeMovement.amountCents, incomeMovement.accountId],
         );
-        // Outcome movement took money from fromAccountId. We must add it back.
         await txn.rawUpdate(
           'UPDATE accounts SET actual_balance_cents = actual_balance_cents + ? WHERE id = ?',
           [outcomeMovement.amountCents, outcomeMovement.accountId],
         );
       }
 
-      // Delete the transfer record
       await deleteTransferRow(txn, transferId);
 
-      // Delete the associated movements
       await txn.delete('movements', where: 'id = ?', whereArgs: [transfer.incomeMovementId]);
       await txn.delete('movements', where: 'id = ?', whereArgs: [transfer.outcomeMovementId]);
     });

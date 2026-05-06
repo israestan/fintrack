@@ -25,7 +25,6 @@ class SecurityRepository {
 
   Future<bool> deletePin() async {
     await _secureStorage.delete(key: _pinKey);
-    // Invariant: biometrics and auto-lock both require PIN as fallback.
     await setBiometricEnabled(false);
     await setAutoLockEnabled(false);
     return true;
@@ -51,7 +50,7 @@ class SecurityRepository {
   Future<bool> canUseBiometrics() async {
     final enabled = await isBiometricEnabled();
     if (!enabled) return false;
-    // Check if hardware available
+    //Check if hardware is available
     final supported = await _biometricService.isDeviceSupported();
     final canCheck = await _biometricService.canCheckBiometrics();
     return supported && canCheck;

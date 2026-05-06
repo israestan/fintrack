@@ -56,14 +56,13 @@ class AccountsViewModel extends ChangeNotifier {
         await _bankAccountsRepo.createBankAccount(bankAccount);
       }
 
-      await loadAccounts(); // Recargar lista
+      await loadAccounts();
     } catch (e) {
       _error = e.toString();
       notifyListeners();
-      rethrow; // Re-lanzar para que la UI sepa que falló
+      rethrow;
     } finally {
-      _isLoading =
-          false; // Solo si no re-lanzamos, pero aquí para asegurar reset
+      _isLoading = false;
       notifyListeners();
     }
   }
@@ -75,21 +74,16 @@ class AccountsViewModel extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
     try {
-      // 1. Actualizar cuenta base
       await _accountsRepo.updateAccount(account.id, account.toMap());
 
-      // 2. Manejar detalles bancarios
-      // Si recibimos detalles, actualizamos o creamos (upsert lógico)
       if (bankDetails != null) {
         final existing = await _bankAccountsRepo.getByAccountId(account.id);
         if (existing != null) {
-          // Actualizar
           await _bankAccountsRepo.updateBankAccount(account.id, {
             'bank_name': bankDetails['bank_name'],
             'number': bankDetails['number'],
           });
         } else {
-          // Crear si no existía (ej. cambió de CASH a SAVINGS)
           final bankAccount = BankAccount(
             accountId: account.id,
             bankName: bankDetails['bank_name'] ?? '',
@@ -98,13 +92,6 @@ class AccountsViewModel extends ChangeNotifier {
           await _bankAccountsRepo.createBankAccount(bankAccount);
         }
       } else {
-        // Si NO recibimos detalles bancarios, pero la cuenta antes tenía (ej. cambió de SAVINGS a CASH)
-        // Deberíamos borrar los detalles bancarios?
-        // Por ahora, asumimos que si el tipo cambia, el Repo de banco no se toca o se borra manual.
-        // Dado el requerimiento "No inventes", lo dejaremos simple: solo actuamos si hay detalles nuevos.
-        // Aunque para consistencia, si cambia a efectivo, los datos bancarios quedan huérfanos/ocultos.
-        // Una mejora sería verificar el tipo de cuenta y borrar bank_account si ya no aplica.
-        // Pero para MVP, actualizar es suficiente.
       }
 
       await loadAccounts();
@@ -138,7 +125,6 @@ class AccountsViewModel extends ChangeNotifier {
     try {
       return await _bankAccountsRepo.getByAccountId(accountId);
     } catch (e) {
-      // Silencioso o log
       return null;
     }
   }

@@ -80,13 +80,7 @@ class CategoriesViewModel extends ChangeNotifier {
       notifyListeners();
       rethrow;
     } finally {
-      // Loading is set to false inside load... methods, but if they are called sequentially, it's fine.
-      // However, if we didn't call load..., we should ensure isLoading is false.
-      // Since we await load... methods which handle isLoading, we are good.
-      // Actually, load... methods set isLoading = true at start.
-      // So effectively:
-      // create -> isLoading=true -> repo.create -> load -> isLoading=true -> repo.list -> isLoading=false.
-      // There's a minimal flickr or redundant state change but it's safe.
+
     }
   }
 
@@ -106,13 +100,10 @@ class CategoriesViewModel extends ChangeNotifier {
       notifyListeners();
       rethrow;
     } finally {
-      // _isLoading set to false by load... methods
     }
   }
 
   Future<void> deleteCategory(String id, String type) async {
-    // We need type to know which list to reload, or we can just reload both or reload based on current assumption.
-    // Passing type is safer optimization.
     _isLoading = true;
     notifyListeners();
 
@@ -128,7 +119,7 @@ class CategoriesViewModel extends ChangeNotifier {
       notifyListeners();
       rethrow;
     } finally {
-      // _isLoading set to false by load... methods
+
     }
   }
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'biometric_pin_screen.dart';
 import 'create_pin_screen_test.dart';
@@ -53,7 +55,6 @@ class TestMenuScreen extends StatelessWidget {
             icon: Icons.text_increase,
             targetScreen: const AccessibilityScalingTestScreen(),
           ),
-          // Aquí agregaremos más widgets dummy conforme los creemos
         ],
       ),
     );

@@ -11,7 +11,6 @@ class _IntroductionSlidesTestState extends State<IntroductionSlidesTest> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  // Datos dummy de los slides
   final List<Map<String, dynamic>> _slides = [
     {
       "image": "assets/splash/icon.png",
@@ -46,7 +45,6 @@ class _IntroductionSlidesTestState extends State<IntroductionSlidesTest> {
         curve: Curves.easeInOut,
       );
     } else {
-      // Finalizar/Salir
       Navigator.of(context).pop();
     }
   }
@@ -62,11 +60,9 @@ class _IntroductionSlidesTestState extends State<IntroductionSlidesTest> {
 
   @override
   Widget build(BuildContext context) {
-    // Usamos colores hardcodeados similares a la imagen o al tema del proyecto
-    final backgroundColor = const Color(0xFFF5F5F5); // Fondo gris muy claro
+    final backgroundColor = const Color(0xFFF5F5F5); 
     final primaryColor =
-        const Color(0xFF4D1717); // Color vino del proyecto (según docs)
-
+        const Color(0xFF4D1717); 
     return Scaffold(
       backgroundColor: backgroundColor,
       body: SafeArea(
@@ -93,7 +89,6 @@ class _IntroductionSlidesTestState extends State<IntroductionSlidesTest> {
                 },
               ),
             ),
-            // Indicadores (Puntos)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
@@ -102,13 +97,11 @@ class _IntroductionSlidesTestState extends State<IntroductionSlidesTest> {
               ),
             ),
             const SizedBox(height: 40),
-            // Botones de Navegación
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Botón Atrás (Oculto en la primera página)
                   if (_currentPage > 0)
                     TextButton(
                       onPressed: _previousPage,
@@ -122,9 +115,8 @@ class _IntroductionSlidesTestState extends State<IntroductionSlidesTest> {
                       ),
                     )
                   else
-                    const SizedBox(width: 80), // Espaciador para mantener layout
+                    const SizedBox(width: 80), 
 
-                  // Botón Siguiente / Finalizar
                   ElevatedButton(
                     onPressed: _nextPage,
                     style: ElevatedButton.styleFrom(
@@ -162,6 +154,7 @@ class _IntroductionSlidesTestState extends State<IntroductionSlidesTest> {
       height: 8,
       width: 8,
       decoration: BoxDecoration(
+        // ignore: deprecated_member_use
         color: _currentPage == index ? color : Colors.grey.withOpacity(0.4),
         shape: BoxShape.circle,
       ),
@@ -191,12 +184,12 @@ class _SlideContent extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Icono circular o Imagen
           Container(
-            height: 120, // Ajustar según necesidad visual
+            height: 120, 
             width: 120,
             decoration: BoxDecoration(
-              color: Colors.grey.withOpacity(0.15), // Fondo gris circular suave
+              // ignore: deprecated_member_use
+              color: Colors.grey.withOpacity(0.15), 
               shape: BoxShape.circle,
             ),
             padding: image != null ? const EdgeInsets.all(20) : null,
@@ -208,24 +201,22 @@ class _SlideContent extends StatelessWidget {
                 : Icon(
                     icon,
                     size: 50,
-                    color: primaryColor, // Usamos el color primario para el icono
+                    color: primaryColor, 
                   ),
           ),
           const SizedBox(height: 40),
-          // Título
           Text(
             title,
             textAlign: TextAlign.center,
             style: const TextStyle(
-              fontSize: 28, // Tamaño grande como en la imagen
-              fontWeight: FontWeight.w800, // Muy grueso
+              fontSize: 28,
+              fontWeight: FontWeight.w800, 
               color: Colors.black87,
               height: 1.2,
-              fontFamily: 'Inter', // Si tuvieras fuente custom, si no default
+              fontFamily: 'Inter', 
             ),
           ),
           const SizedBox(height: 20),
-          // Descripción
           Text(
             description,
             textAlign: TextAlign.center,

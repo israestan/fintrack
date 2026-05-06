@@ -106,7 +106,6 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
 
                 const SizedBox(height: 40),
 
-                // Indicadores de dígitos
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(_pinLength, (i) {

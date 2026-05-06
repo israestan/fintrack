@@ -12,8 +12,6 @@ class _CreatePinScreenTestState extends State<CreatePinScreenTest> {
   final Color primaryColor = const Color(0xFF4D1717);
   final Color surfaceColor = Colors.white;
 
-  // 0: Introducir nuevo PIN
-  // 1: Confirmar PIN
   int _step = 0;
   
   String _firstPin = "";
@@ -42,7 +40,6 @@ class _CreatePinScreenTestState extends State<CreatePinScreenTest> {
           children: [
             const Spacer(),
             
-            // Header: Logo
              Container(
               width: 80,
               height: 80,
@@ -59,7 +56,6 @@ class _CreatePinScreenTestState extends State<CreatePinScreenTest> {
             ),
             const SizedBox(height: 30),
             
-            // Textos Instrucciones
             Text(
               title,
               style: TextStyle(
@@ -80,7 +76,6 @@ class _CreatePinScreenTestState extends State<CreatePinScreenTest> {
             
             const SizedBox(height: 40),
 
-            // Puntos del PIN
             Container(
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
               margin: const EdgeInsets.only(bottom: 20),
@@ -107,7 +102,6 @@ class _CreatePinScreenTestState extends State<CreatePinScreenTest> {
 
             const Spacer(),
 
-            // Teclado Numérico
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 40),
               child: GridView.builder(
@@ -183,19 +177,16 @@ class _CreatePinScreenTestState extends State<CreatePinScreenTest> {
   }
 
   void _handlePinCompleted() {
-    // Pequeño delay para que el usuario vea el 4to punto llenarse
     Future.delayed(const Duration(milliseconds: 200), () {
       if (!mounted) return;
 
       if (_step == 0) {
-        // Paso 1 completado: Guardar primer input y pedir confirmación
         setState(() {
           _firstPin = _currentPin;
           _currentPin = "";
           _step = 1;
         });
       } else {
-        // Paso 2 completado: Comparar
         if (_currentPin == _firstPin) {
           // ÉXITO
           ScaffoldMessenger.of(context).showSnackBar(
@@ -206,14 +197,12 @@ class _CreatePinScreenTestState extends State<CreatePinScreenTest> {
           );
            Navigator.of(context).pop(); // Salir simulation
         } else {
-          // ERROR: No coinciden
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Los PINs no coinciden. Inténtalo de nuevo.'),
               backgroundColor: Colors.red,
             ),
           );
-          // Reiniciar todo el proceso para mayor seguridad
           setState(() {
             _step = 0;
             _firstPin = "";

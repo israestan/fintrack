@@ -7,7 +7,6 @@ import 'package:fintrack/data/utils/uuid_util.dart';
 import 'package:fintrack/domain/models/movement.dart';
 
 class MovementsRepository {
-  /// Create a movement. If [txn] is provided the insertion will use it (for transactions).
   
   Future<String> createMovement(
     Movement movement, {
@@ -121,7 +120,6 @@ class MovementsRepository {
       final toInsert = withCreateTimestamps(row);
       await insertMovementRow(txn, toInsert);
 
-      // Update account balance atomically using arithmetic to avoid read-modify-write races.
       if (movement.type == 'INCOME') {
         await txn.rawUpdate(
           'UPDATE accounts SET actual_balance_cents = actual_balance_cents + ? WHERE id = ?',
@@ -138,9 +136,6 @@ class MovementsRepository {
     return id;
   }
 
-  /// Deletes a non-transfer movement and reverts the account balance in a
-  /// single atomic transaction. Do NOT call this for movements that belong to
-  /// a transfer — use [TransfersRepository.deleteTransfer] instead.
   Future<void> deleteMovementAndRevertBalance(String movementId) async {
     final db = await FinTrackDb.instance.db;
 

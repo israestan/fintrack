@@ -14,12 +14,11 @@ class _BiometricPinScreenState extends State<BiometricPinScreen> {
 
   String pin = "";
   final int pinLength = 4;
-  bool _showPinInput = false; // Estado para alternar entre Biometría y PIN
+  bool _showPinInput = false; 
 
   @override
   void initState() {
     super.initState();
-    // Simular solicitud automática de huella al iniciar
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _simulateBiometricScan();
     });
@@ -39,7 +38,6 @@ class _BiometricPinScreenState extends State<BiometricPinScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
-      // AppBar simplificada
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -53,7 +51,6 @@ class _BiometricPinScreenState extends State<BiometricPinScreen> {
           children: [
             const SizedBox(height: 20),
             
-            // Header: Logo y Bienvenida
             Container(
               width: 80,
               height: 80,
@@ -86,8 +83,6 @@ class _BiometricPinScreenState extends State<BiometricPinScreen> {
               ),
             ),
 
-            // Contenido dinámico (Biometría vs PIN)
-            // Usamos Expanded en los hijos para gestionar el espacio vertical
             if (_showPinInput) _buildPinInterface() else _buildBiometricInterface(),
           ],
         ),
@@ -95,7 +90,6 @@ class _BiometricPinScreenState extends State<BiometricPinScreen> {
     );
   }
 
-  // Interfaz de Biometría (Defecto)
   Widget _buildBiometricInterface() {
     return Expanded(
       child: SizedBox(
@@ -106,7 +100,6 @@ class _BiometricPinScreenState extends State<BiometricPinScreen> {
           mainAxisSize: MainAxisSize.max,
           children: [
             const Spacer(),
-            // Icono de huella grande y animado (simulado)
             GestureDetector(
             onTap: _simulateBiometricScan,
             child: Container(
@@ -130,7 +123,6 @@ class _BiometricPinScreenState extends State<BiometricPinScreen> {
             style: TextStyle(color: Colors.grey),
           ),
           const Spacer(),
-          // Botón para cambiar a PIN
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: TextButton.icon(
@@ -155,13 +147,11 @@ class _BiometricPinScreenState extends State<BiometricPinScreen> {
     ));
   }
 
-  // Interfaz de PIN
   Widget _buildPinInterface() {
     return Expanded(
       flex: 10,
       child: Column(
         children: [
-          // Puntos del PIN
           Container(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
             margin: const EdgeInsets.only(bottom: 20),
@@ -185,10 +175,7 @@ class _BiometricPinScreenState extends State<BiometricPinScreen> {
               }),
             ),
           ),
-
           const SizedBox(height: 10),
-
-          // Teclado Numérico
           Expanded(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 40),
@@ -198,15 +185,13 @@ class _BiometricPinScreenState extends State<BiometricPinScreen> {
                 shrinkWrap: true,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
-                  childAspectRatio: 1.5, // Más ancho para asegurar visibilidad
+                  childAspectRatio: 1.5, 
                   crossAxisSpacing: 25,
                   mainAxisSpacing: 15,
                 ),
                 itemCount: 12,
                 itemBuilder: (context, index) {
-                  // Mapeo corregido: 0->1, ... 2->3, ... 8->9
                   if (index == 9) {
-                    // Botón inferior izquierdo (Volver a Biometría)
                     return IconButton(
                       onPressed: () {
                         setState(() {

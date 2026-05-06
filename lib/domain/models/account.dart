@@ -6,7 +6,7 @@ class Account {
   final String? description;
   final int initialBalanceCents;
   final int actualBalanceCents;
-  final int active; // 0 or 1
+  final int active; //0, 1
   final String typeId;
   final String? createdAt;
   final String? updatedAt;

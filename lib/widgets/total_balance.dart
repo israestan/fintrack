@@ -32,7 +32,7 @@ class TotalBalance extends StatelessWidget {
                   color: Colors.grey[600],
                   fontWeight: FontWeight.w400,
                 ),
-                semanticsLabel: '', // Ocultamos este texto individual porque ya lo lee el padre
+                semanticsLabel: '', 
               ),
               const SizedBox(height: 4),
               Text(
@@ -43,7 +43,7 @@ class TotalBalance extends StatelessWidget {
                   color: Colors.black,
                   letterSpacing: -1.0,
                 ),
-                semanticsLabel: '', // Ocultamos este texto individual porque ya lo lee el padre
+                semanticsLabel: '',
               ),
             ],
           ),

@@ -1,4 +1,3 @@
-/// Utility functions to handle timestamps and dates in ISO-8601 UTC format.
 library;
 
 String nowIsoUtc() => DateTime.now().toUtc().toIso8601String();

@@ -109,7 +109,7 @@ class _CreateBudgetSheetState extends State<CreateBudgetSheet> {
                 ),
                 const SizedBox(height: 20),
 
-                // Nombre
+
                 TextFormField(
                   controller: _nameController,
                   decoration: const InputDecoration(
@@ -123,7 +123,7 @@ class _CreateBudgetSheetState extends State<CreateBudgetSheet> {
                 ),
                 const SizedBox(height: 16),
 
-                // Límite
+
                 TextFormField(
                   controller: _limitController,
                   decoration: const InputDecoration(
@@ -146,7 +146,7 @@ class _CreateBudgetSheetState extends State<CreateBudgetSheet> {
                 ),
                 const SizedBox(height: 16),
 
-                // Periodo
+
                 const Text(
                   'Periodo',
                   style: TextStyle(
@@ -178,7 +178,6 @@ class _CreateBudgetSheetState extends State<CreateBudgetSheet> {
                 ),
                 const SizedBox(height: 16),
 
-                // Categorías de gasto
                 const Text(
                   'Categorías a monitorizar',
                   style: TextStyle(
@@ -226,7 +225,6 @@ class _CreateBudgetSheetState extends State<CreateBudgetSheet> {
                       ),
                 const SizedBox(height: 24),
 
-                // Botón guardar
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(

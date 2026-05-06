@@ -47,7 +47,6 @@ class AccountsRepository {
     return await updateAccount(id, {'active': 0});
   }
 
-  // Low-level helper to allow transactional usage in services/tests
   Future<String> createAccountInTransaction(
     DatabaseExecutor txn,
     Account account,

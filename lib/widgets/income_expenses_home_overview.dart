@@ -13,7 +13,7 @@ class IncomeExpensesHomeOverview extends StatefulWidget {
 }
 
 class _IncomeExpensesHomeOverviewState extends State<IncomeExpensesHomeOverview> {
-  bool _isWeekly = true; //true = This Week, false = This Month
+  bool _isWeekly = true;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,6 @@ class _IncomeExpensesHomeOverviewState extends State<IncomeExpensesHomeOverview>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header Toggle
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -80,7 +79,6 @@ class _IncomeExpensesHomeOverviewState extends State<IncomeExpensesHomeOverview>
               ),
               const SizedBox(height: 24),
 
-              // Stats Row
               Semantics(
                 label: 'Resumen de flujo de caja',
                 child: Wrap(
@@ -106,10 +104,8 @@ class _IncomeExpensesHomeOverviewState extends State<IncomeExpensesHomeOverview>
 
               const SizedBox(height: 16),
 
-              // Comparison Bar
               Semantics(
                 label: 'Barra de comparación visual: Ingresos frente a Gastos',
-                excludeSemantics: true, // Ocultamos los detalles internos visuales
                 child: totalFlow > 0
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(8),
@@ -155,22 +151,16 @@ class _IncomeExpensesHomeOverviewState extends State<IncomeExpensesHomeOverview>
     DateTime start, end;
 
     if (_isWeekly) {
-      // Find Monday of current week
       start = now.subtract(Duration(days: now.weekday - 1));
-      // End of Sunday
       end = start.add(const Duration(days: 6, hours: 23, minutes: 59, seconds: 59));
-      // Normalize start to beginning of day
       start = DateTime(start.year, start.month, start.day);
     } else {
-      // First day of month
       start = DateTime(now.year, now.month, 1);
-      // Last moment of month
       end = DateTime(now.year, now.month + 1, 0, 23, 59, 59);
     }
 
     for (var m in movements) {
       final date = DateTime.parse(m.date);
-      // Check if date is within range
       if (date.isAfter(start.subtract(const Duration(seconds: 1))) && 
           date.isBefore(end.add(const Duration(seconds: 1)))) {
         

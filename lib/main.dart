@@ -47,11 +47,9 @@ class MyApp extends StatelessWidget {
       title: 'FinTrack',
       theme: AppTheme.lightTheme,
       builder: (context, child) {
-        // Apply global text scale factor from TextScaleViewModel
         final scale = context.watch<TextScaleViewModel>().scale;
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(scale)),
-          // Reset inactivity timer on every pointer event (RNF-08)
           child: Listener(
             behavior: HitTestBehavior.translucent,
             onPointerDown: (_) =>
